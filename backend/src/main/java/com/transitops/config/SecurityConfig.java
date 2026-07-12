@@ -1,9 +1,10 @@
 package com.transitops.config;
 
-import com.transitops.security.JwtAuthenticationEntryPoint;
-import com.transitops.security.JwtAuthenticationFilter;
+import java.util.List;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -18,7 +19,9 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.util.List;
+import com.transitops.security.JwtAccessDeniedHandler;
+import com.transitops.security.JwtAuthenticationEntryPoint;
+import com.transitops.security.JwtAuthenticationFilter;
 
 /**
  * Stateless JWT security. Public: auth endpoints + actuator health. Everything
@@ -39,13 +42,16 @@ public class SecurityConfig {
     private final SecurityProperties securityProperties;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final JwtAuthenticationEntryPoint authenticationEntryPoint;
+    private final JwtAccessDeniedHandler accessDeniedHandler;
 
     public SecurityConfig(SecurityProperties securityProperties,
                           JwtAuthenticationFilter jwtAuthenticationFilter,
-                          JwtAuthenticationEntryPoint authenticationEntryPoint) {
+                          JwtAuthenticationEntryPoint authenticationEntryPoint,
+                          JwtAccessDeniedHandler accessDeniedHandler) {
         this.securityProperties = securityProperties;
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
         this.authenticationEntryPoint = authenticationEntryPoint;
+        this.accessDeniedHandler = accessDeniedHandler;
     }
 
     @Bean
@@ -54,11 +60,35 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .exceptionHandling(ex -> ex.authenticationEntryPoint(authenticationEntryPoint))
+                .exceptionHandling(ex -> ex.authenticationEntryPoint(authenticationEntryPoint).accessDeniedHandler(accessDeniedHandler))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(PUBLIC_PATHS).permitAll()
+                        .requestMatchers(PUBLIC_PATHS).permitAll() // All Permit for Test
+
+                        .requestMatchers(HttpMethod.POST, "/api/vehicles/**", "/api/maintenance/**").hasRole("FLEET_MANAGER")
+                        .requestMatchers(HttpMethod.PUT, "/api/vehicles/**", "/api/maintenance/**").hasRole("FLEET_MANAGER")
+                        .requestMatchers(HttpMethod.PATCH, "/api/vehicles/**", "/api/maintenance/**").hasRole("FLEET_MANAGER")
+                        .requestMatchers(HttpMethod.DELETE, "/api/vehicles/**", "/api/maintenance/**").hasRole("FLEET_MANAGER")
+
+                        .requestMatchers(HttpMethod.POST, "/api/drivers/**").hasAnyRole("SAFETY_OFFICER", "FLEET_MANAGER")
+                        .requestMatchers(HttpMethod.PUT, "/api/drivers/**").hasAnyRole("SAFETY_OFFICER", "FLEET_MANAGER")
+                        .requestMatchers(HttpMethod.PATCH, "/api/drivers/**").hasAnyRole("SAFETY_OFFICER", "FLEET_MANAGER")
+                        .requestMatchers(HttpMethod.DELETE, "/api/drivers/**").hasAnyRole("SAFETY_OFFICER", "FLEET_MANAGER")
+
+                        .requestMatchers(HttpMethod.POST, "/api/trips/**").hasAnyRole("DISPATCHER", "FLEET_MANAGER")
+                        .requestMatchers(HttpMethod.PUT, "/api/trips/**").hasAnyRole("DISPATCHER", "FLEET_MANAGER")
+                        .requestMatchers(HttpMethod.PATCH, "/api/trips/**").hasAnyRole("DISPATCHER", "FLEET_MANAGER")
+                        .requestMatchers(HttpMethod.DELETE, "/api/trips/**").hasAnyRole("DISPATCHER", "FLEET_MANAGER")
+
+                        .requestMatchers(HttpMethod.POST, "/api/fuel-logs/**", "/api/expenses/**").hasAnyRole("FINANCIAL_ANALYST", "FLEET_MANAGER")
+                        .requestMatchers(HttpMethod.PUT, "/api/fuel-logs/**", "/api/expenses/**").hasAnyRole("FINANCIAL_ANALYST", "FLEET_MANAGER")
+                        .requestMatchers(HttpMethod.PATCH, "/api/fuel-logs/**", "/api/expenses/**").hasAnyRole("FINANCIAL_ANALYST", "FLEET_MANAGER")
+                        .requestMatchers(HttpMethod.DELETE, "/api/fuel-logs/**", "/api/expenses/**").hasAnyRole("FINANCIAL_ANALYST", "FLEET_MANAGER")
+
+                        .requestMatchers("/api/users/**").hasRole("FLEET_MANAGER")
+                        .requestMatchers(HttpMethod.POST, "/api/roles/**").hasRole("FLEET_MANAGER")
+
+                        .requestMatchers(HttpMethod.GET, "/api/**").authenticated()
                         .anyRequest().authenticated())
-                // H2 console renders in a frame during local dev.
                 .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()))
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
