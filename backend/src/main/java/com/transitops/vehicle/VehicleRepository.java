@@ -33,5 +33,4 @@ public interface VehicleRepository extends JpaRepository<Vehicle, UUID> {
 
     List<Vehicle> findByStatus(VehicleStatus status);
 
-    long countByStatus(VehicleStatus status);
 }
