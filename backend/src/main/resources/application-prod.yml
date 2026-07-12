@@ -1,0 +1,25 @@
+# ==========================================================================
+# PRODUCTION profile – everything comes from environment variables.
+# Run: SPRING_PROFILES_ACTIVE=prod java -jar backend.jar
+# NOTHING sensitive is hard-coded; JWT_SECRET & DB_* MUST be provided.
+# ==========================================================================
+spring:
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: ${DB_POOL_MAX:20}
+      minimum-idle: ${DB_POOL_MIN:5}
+  jpa:
+    hibernate:
+      # Never auto-mutate a production schema; use migrations (Flyway/Liquibase).
+      ddl-auto: validate
+    show-sql: false
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+logging:
+  level:
+    root: INFO
+    com.transitops: INFO
