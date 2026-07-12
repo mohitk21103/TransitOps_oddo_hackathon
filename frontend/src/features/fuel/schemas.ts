@@ -13,6 +13,7 @@ export type FuelFormValues = z.infer<typeof fuelSchema>
 
 export const expenseSchema = z.object({
   vehicleId: z.string().optional(),
+  tripId: z.string().optional(),
   category: z.enum(
     Object.values(ExpenseCategory) as [ExpenseCategory, ...ExpenseCategory[]],
   ),

@@ -3,6 +3,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Button, Input, Modal, Select } from '@/components/ui'
 import type { AppError, SelectOption } from '@/types'
 import { useVehicles } from '@/features/vehicles'
+import { useTrips } from '@/features/trips'
 import { useCreateExpense } from '../hooks/useFuel'
 import { EXPENSE_CATEGORY_LABELS, ExpenseCategory } from '../types'
 import { expenseSchema, type ExpenseFormValues } from '../schemas'
@@ -18,7 +19,8 @@ interface ExpenseFormModalProps {
 
 export function ExpenseFormModal({ open, onClose }: ExpenseFormModalProps) {
   const createMutation = useCreateExpense()
-  const { data: vehicles } = useVehicles()
+  const { data: vehicles } = useVehicles({ pageSize: 200 })
+  const { data: trips } = useTrips({ pageSize: 200 })
   const today = new Date().toISOString().slice(0, 10)
 
   const vehicleOptions: SelectOption[] = [
@@ -26,6 +28,13 @@ export function ExpenseFormModal({ open, onClose }: ExpenseFormModalProps) {
     ...(vehicles?.items ?? []).map((v) => ({
       value: v.id,
       label: `${v.registrationNumber} — ${v.name}`,
+    })),
+  ]
+  const tripOptions: SelectOption[] = [
+    { value: '', label: 'None' },
+    ...(trips?.items ?? []).map((t) => ({
+      value: t.id,
+      label: `#${t.id.slice(0, 6).toUpperCase()} · ${t.source} → ${t.destination}`,
     })),
   ]
 
@@ -38,6 +47,7 @@ export function ExpenseFormModal({ open, onClose }: ExpenseFormModalProps) {
     resolver: zodResolver(expenseSchema),
     defaultValues: {
       vehicleId: '',
+      tripId: '',
       category: ExpenseCategory.Toll,
       amount: 0,
       note: '',
@@ -47,11 +57,12 @@ export function ExpenseFormModal({ open, onClose }: ExpenseFormModalProps) {
 
   const serverError = (createMutation.error as AppError | null)?.message
 
-  const onSubmit = handleSubmit(async ({ vehicleId, ...rest }) => {
+  const onSubmit = handleSubmit(async ({ vehicleId, tripId, ...rest }) => {
     try {
       await createMutation.mutateAsync({
         ...rest,
         vehicleId: vehicleId || undefined,
+        tripId: tripId || undefined,
       })
       reset()
       onClose()
@@ -76,6 +87,12 @@ export function ExpenseFormModal({ open, onClose }: ExpenseFormModalProps) {
             step="any"
             error={errors.amount?.message}
             {...register('amount', { valueAsNumber: true })}
+          />
+          <Select
+            label="Trip (optional)"
+            options={tripOptions}
+            error={errors.tripId?.message}
+            {...register('tripId')}
           />
           <Select
             label="Vehicle (optional)"
