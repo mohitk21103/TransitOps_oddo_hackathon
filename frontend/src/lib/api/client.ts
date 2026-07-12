@@ -31,14 +31,19 @@ apiClient.interceptors.request.use(
 
 apiClient.interceptors.response.use(
   (response) => response,
-  (error: AxiosError<{ message?: string; details?: Record<string, string[]> }>) => {
+  (
+    error: AxiosError<{
+      message?: string
+      fieldErrors?: Record<string, string[]>
+    }>,
+  ) => {
     const appError: AppError = {
       status: error.response?.status ?? 0,
       message:
         error.response?.data?.message ??
         error.message ??
         'Something went wrong. Please try again.',
-      details: error.response?.data?.details,
+      details: error.response?.data?.fieldErrors,
     }
 
     // Session expired — drop the token so guards can redirect to login.

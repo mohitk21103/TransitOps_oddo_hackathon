@@ -10,17 +10,19 @@ import { loginSchema, type LoginFormValues } from '../schemas'
 import { ROLE_LABELS, ROLE_OPTIONS, Role } from '../types'
 
 const BRAND_ROLES = [
-  Role.FleetManager,
+  Role.Admin,
+  Role.Manager,
   Role.Dispatcher,
-  Role.SafetyOfficer,
-  Role.FinancialAnalyst,
+  Role.Driver,
+  Role.Viewer,
 ]
 
 const ROLE_SCOPE: { role: Role; scope: string }[] = [
-  { role: Role.FleetManager, scope: 'Fleet, Maintenance' },
+  { role: Role.Admin, scope: 'Full access, users & roles' },
+  { role: Role.Manager, scope: 'Fleet, Maintenance, Reports' },
   { role: Role.Dispatcher, scope: 'Dashboard, Trips' },
-  { role: Role.SafetyOfficer, scope: 'Drivers, Compliance' },
-  { role: Role.FinancialAnalyst, scope: 'Fuel & Expenses, Analytics' },
+  { role: Role.Driver, scope: 'Own trips & logs' },
+  { role: Role.Viewer, scope: 'Read-only dashboards' },
 ]
 
 const fieldLabel = 'text-xs font-medium uppercase tracking-wide text-slate-500'
@@ -43,8 +45,8 @@ export function LoginPage() {
     },
   })
 
-  const onSubmit = handleSubmit(async ({ email, password, role }) => {
-    await login({ email, password, role }).catch(() => {
+  const onSubmit = handleSubmit(async ({ email, password }) => {
+    await login({ email, password }).catch(() => {
       /* surfaced via loginError */
     })
   })
@@ -62,7 +64,9 @@ export function LoginPage() {
         </div>
 
         <div>
-          <p className="text-sm font-medium text-slate-200">One login, four roles:</p>
+          <p className="text-sm font-medium text-slate-200">
+            One login, role-scoped access:
+          </p>
           <ul className="mt-4 space-y-3">
             {BRAND_ROLES.map((role) => (
               <li key={role} className="flex items-center gap-3 text-sm text-slate-300">

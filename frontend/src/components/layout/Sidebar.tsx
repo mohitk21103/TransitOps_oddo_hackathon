@@ -6,10 +6,10 @@ import { useAuthStore } from '@/stores/authStore'
 import { NAV_ITEMS } from './navigation'
 
 export function Sidebar() {
-  const { user } = useAuthStore()
+  const { hasAnyRole } = useAuthStore()
 
   const items = NAV_ITEMS.filter(
-    (item) => !item.roles || (user && item.roles.includes(user.role)),
+    (item) => !item.roles || hasAnyRole(...item.roles),
   )
 
   return (
