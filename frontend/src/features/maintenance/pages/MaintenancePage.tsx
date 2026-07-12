@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Plus, Wrench } from 'lucide-react'
 import {
   Badge,
@@ -8,12 +9,16 @@ import {
   Spinner,
 } from '@/components/ui'
 import { formatCurrency, formatDate } from '@/lib/utils'
-import { useMaintenanceLogs } from '../hooks/useMaintenance'
+import { useCloseMaintenance, useMaintenanceLogs } from '../hooks/useMaintenance'
 import { MaintenanceStatus } from '../types'
+import { MaintenanceFormModal } from '../components/MaintenanceFormModal'
 
 export function MaintenancePage() {
   const { data, isLoading, isError } = useMaintenanceLogs()
   const logs = data?.items ?? []
+
+  const [formOpen, setFormOpen] = useState(false)
+  const closeMutation = useCloseMaintenance()
 
   return (
     <div className="flex flex-col gap-6">
@@ -21,7 +26,12 @@ export function MaintenancePage() {
         title="Maintenance"
         description="Service records. Opening a record moves the vehicle to In Shop."
         action={
-          <Button leftIcon={<Plus className="h-4 w-4" />}>New Record</Button>
+          <Button
+            leftIcon={<Plus className="h-4 w-4" />}
+            onClick={() => setFormOpen(true)}
+          >
+            New Record
+          </Button>
         }
       />
 
@@ -40,6 +50,14 @@ export function MaintenancePage() {
           icon={Wrench}
           title="No maintenance records"
           description="Log a service to track vehicle upkeep and costs."
+          action={
+            <Button
+              leftIcon={<Plus className="h-4 w-4" />}
+              onClick={() => setFormOpen(true)}
+            >
+              New Record
+            </Button>
+          }
         />
       ) : (
         <Card className="overflow-hidden">
@@ -51,6 +69,7 @@ export function MaintenancePage() {
                   <th className="px-5 py-3 font-medium">Opened</th>
                   <th className="px-5 py-3 font-medium">Cost</th>
                   <th className="px-5 py-3 font-medium">Status</th>
+                  <th className="px-5 py-3 text-right font-medium">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
@@ -72,6 +91,23 @@ export function MaintenancePage() {
                         {log.status === MaintenanceStatus.Open ? 'Open' : 'Closed'}
                       </Badge>
                     </td>
+                    <td className="px-5 py-3">
+                      <div className="flex justify-end">
+                        {log.status === MaintenanceStatus.Open && (
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => closeMutation.mutate(log.id)}
+                            isLoading={
+                              closeMutation.isPending &&
+                              closeMutation.variables === log.id
+                            }
+                          >
+                            Close
+                          </Button>
+                        )}
+                      </div>
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -79,6 +115,8 @@ export function MaintenancePage() {
           </div>
         </Card>
       )}
+
+      <MaintenanceFormModal open={formOpen} onClose={() => setFormOpen(false)} />
     </div>
   )
 }
