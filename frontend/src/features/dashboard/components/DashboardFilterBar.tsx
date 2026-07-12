@@ -3,6 +3,7 @@ import type { SelectOption } from '@/types'
 import {
   VEHICLE_STATUS_LABELS,
   VEHICLE_TYPE_LABELS,
+  useVehicles,
   type VehicleStatus,
   type VehicleType,
 } from '@/features/vehicles'
@@ -32,6 +33,20 @@ interface DashboardFilterBarProps {
 }
 
 export function DashboardFilterBar({ filters, onChange }: DashboardFilterBarProps) {
+  const { data: vehicles } = useVehicles()
+  const regionOptions: SelectOption[] = [
+    ALL,
+    ...Array.from(
+      new Set(
+        (vehicles?.items ?? [])
+          .map((v) => v.region)
+          .filter((r): r is string => Boolean(r)),
+      ),
+    )
+      .sort()
+      .map((region) => ({ value: region, label: region })),
+  ]
+
   return (
     <div className="flex flex-col gap-2">
       <p className="text-xs font-medium uppercase tracking-wide text-slate-500">
@@ -52,10 +67,9 @@ export function DashboardFilterBar({ filters, onChange }: DashboardFilterBarProp
         />
         <Select
           label="Region"
-          options={[ALL]}
-          value=""
-          disabled
-          title="Region data is not available yet"
+          options={regionOptions}
+          value={filters.region ?? ''}
+          onChange={(e) => onChange({ region: e.target.value })}
         />
       </div>
     </div>

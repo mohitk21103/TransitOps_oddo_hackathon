@@ -23,10 +23,12 @@ public interface VehicleRepository extends JpaRepository<Vehicle, UUID> {
             FROM Vehicle v
             WHERE (:type IS NULL OR v.type = :type)
               AND (:status IS NULL OR v.status = :status)
+              AND (:region IS NULL OR v.region = :region)
             GROUP BY v.status
             """)
     List<Object[]> countGroupedByStatus(@Param("type") VehicleType type,
-                                        @Param("status") VehicleStatus status);
+                                        @Param("status") VehicleStatus status,
+                                        @Param("region") String region);
     boolean existsByRegistrationNumberIgnoreCase(String registrationNumber);
 
     Optional<Vehicle> findByRegistrationNumberIgnoreCase(String registrationNumber);
