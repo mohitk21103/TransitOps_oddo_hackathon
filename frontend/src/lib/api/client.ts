@@ -14,7 +14,13 @@ import type { AppError } from '@/types'
  */
 export const apiClient: AxiosInstance = axios.create({
   baseURL: env.apiBaseUrl,
-  headers: { 'Content-Type': 'application/json' },
+  headers: {
+    'Content-Type': 'application/json',
+    // Bypass the ngrok free-tier browser-warning interstitial so the API is
+    // reachable when the backend is shared through an ngrok tunnel. Harmless
+    // when the backend is served directly.
+    'ngrok-skip-browser-warning': 'true',
+  },
   timeout: 15_000,
 })
 
