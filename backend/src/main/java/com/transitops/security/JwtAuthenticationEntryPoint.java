@@ -1,6 +1,5 @@
 package com.transitops.security;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.MediaType;
@@ -10,7 +9,6 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.time.Instant;
-import java.util.Map;
 
 /**
  * Returns a clean JSON 401 (instead of the default HTML) when an
@@ -19,19 +17,19 @@ import java.util.Map;
 @Component
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
-
     @Override
     public void commence(HttpServletRequest request,
                          HttpServletResponse response,
                          AuthenticationException authException) throws IOException {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        objectMapper.writeValue(response.getWriter(), Map.of(
-                "success", false,
-                "message", "Authentication required",
-                "path", request.getRequestURI(),
-                "timestamp", Instant.now().toString()
-        ));
+        String body = """
+                {"success":false,"message":"Authentication required","path":"%s","timestamp":"%s"}"""
+                .formatted(escape(request.getRequestURI()), Instant.now());
+        response.getWriter().write(body);
+    }
+
+    private static String escape(String value) {
+        return value == null ? "" : value.replace("\\", "\\\\").replace("\"", "\\\"");
     }
 }
