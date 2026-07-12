@@ -2,7 +2,6 @@ package com.transitops.driver;
 import com.transitops.common.AuditableEntity;
 import com.transitops.user.User;
 
-import com.transitops.driver.DriverStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;

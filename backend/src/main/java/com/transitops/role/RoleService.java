@@ -1,10 +1,6 @@
 package com.transitops.role;
 
-import com.transitops.role.Role;
-import com.transitops.role.CreateRoleRequest;
-import com.transitops.role.RoleResponse;
 import com.transitops.common.ResourceNotFoundException;
-import com.transitops.role.RoleRepository;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

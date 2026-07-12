@@ -1,6 +1,5 @@
 package com.transitops.security;
 
-import com.transitops.security.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

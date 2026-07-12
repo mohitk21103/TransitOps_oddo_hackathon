@@ -2,8 +2,6 @@ package com.transitops.maintenance;
 import com.transitops.common.AuditableEntity;
 import com.transitops.vehicle.Vehicle;
 
-import com.transitops.maintenance.MaintenanceStatus;
-import com.transitops.maintenance.MaintenanceType;
 import jakarta.persistence.Column;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
