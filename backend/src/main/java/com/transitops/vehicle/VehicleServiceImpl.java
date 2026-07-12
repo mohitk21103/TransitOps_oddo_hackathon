@@ -1,21 +1,37 @@
 package com.transitops.vehicle;
 import com.transitops.vehicle.dto.*;
 
+import com.transitops.common.ListQuery;
 import com.transitops.common.PageResponse;
 import com.transitops.common.ResourceNotFoundException;
+import com.transitops.common.SearchSpecs;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
 @Transactional
 public class VehicleServiceImpl implements VehicleService {
+
+    /** Sortable response field -> JPA property; anything else falls back to the default. */
+    private static final Map<String, String> SORT_FIELDS = Map.ofEntries(
+            Map.entry("registrationNumber", "registrationNumber"),
+            Map.entry("name", "name"),
+            Map.entry("type", "type"),
+            Map.entry("status", "status"),
+            Map.entry("maxLoadCapacity", "maxLoadCapacityKg"),
+            Map.entry("odometer", "odometerKm"),
+            Map.entry("acquisitionCost", "acquisitionCost"),
+            Map.entry("region", "region"),
+            Map.entry("createdAt", "createdAt"),
+            Map.entry("updatedAt", "updatedAt"));
 
     private final VehicleRepository repository;
 
@@ -25,9 +41,11 @@ public class VehicleServiceImpl implements VehicleService {
 
     @Override
     @Transactional(readOnly = true)
-    public PageResponse<VehicleResponse> list(int page, int size) {
-        var pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
-        return PageResponse.of(repository.findAll(pageable), VehicleResponse::from);
+    public PageResponse<VehicleResponse> list(ListQuery query) {
+        Pageable pageable = query.toPageable(SORT_FIELDS, "createdAt");
+        Specification<Vehicle> spec = SearchSpecs.textSearch(
+                query.searchTerm(), "registrationNumber", "name", "region");
+        return PageResponse.of(repository.findAll(spec, pageable), VehicleResponse::from);
     }
 
     @Override

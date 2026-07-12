@@ -2,6 +2,7 @@ package com.transitops.driver;
 import com.transitops.driver.dto.*;
 
 import com.transitops.common.ApiResponse;
+import com.transitops.common.ListQuery;
 import com.transitops.common.PageResponse;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -29,9 +30,12 @@ public class DriverController {
 
     @GetMapping
     public ApiResponse<PageResponse<DriverResponse>> list(
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) String sortBy,
+            @RequestParam(required = false) String sortDir,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "50") int pageSize) {
-        return ApiResponse.ok(service.list(page, pageSize));
+        return ApiResponse.ok(service.list(new ListQuery(search, sortBy, sortDir, page, pageSize)));
     }
 
     @GetMapping("/assignable")

@@ -2,16 +2,18 @@ package com.transitops.trip;
 import com.transitops.trip.dto.*;
 
 import com.transitops.common.BusinessRuleException;
+import com.transitops.common.ListQuery;
 import com.transitops.common.PageResponse;
 import com.transitops.common.ResourceNotFoundException;
+import com.transitops.common.SearchSpecs;
 import com.transitops.driver.Driver;
 import com.transitops.driver.DriverRepository;
 import com.transitops.driver.DriverStatus;
 import com.transitops.vehicle.Vehicle;
 import com.transitops.vehicle.VehicleRepository;
 import com.transitops.vehicle.VehicleStatus;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,11 +22,17 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
 @Transactional
 public class TripServiceImpl implements TripService {
+
+    /** Whitelisted sortable properties; anything else falls back to the default. */
+    private static final Set<String> SORT_FIELDS = Set.of(
+            "referenceCode", "source", "destination", "cargoWeightKg",
+            "plannedDistanceKm", "status", "revenue", "createdAt", "updatedAt");
 
     private final TripRepository tripRepository;
     private final VehicleRepository vehicleRepository;
@@ -40,9 +48,12 @@ public class TripServiceImpl implements TripService {
 
     @Override
     @Transactional(readOnly = true)
-    public PageResponse<TripResponse> list(int page, int size) {
-        var pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
-        return PageResponse.of(tripRepository.findAll(pageable), TripResponse::from);
+    public PageResponse<TripResponse> list(ListQuery query) {
+        Pageable pageable = query.toPageable(SORT_FIELDS, "createdAt");
+        Specification<Trip> spec = SearchSpecs.textSearch(
+                query.searchTerm(), "referenceCode", "source", "destination",
+                "vehicle.registrationNumber", "driver.fullName");
+        return PageResponse.of(tripRepository.findAll(spec, pageable), TripResponse::from);
     }
 
     @Override

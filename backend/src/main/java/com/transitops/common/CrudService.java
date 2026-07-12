@@ -11,7 +11,7 @@ import java.util.UUID;
  */
 public interface CrudService<R, C, U> {
 
-    PageResponse<R> list(int page, int size);
+    PageResponse<R> list(ListQuery query);
 
     R get(UUID id);
 

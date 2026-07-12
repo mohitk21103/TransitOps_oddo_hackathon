@@ -1,23 +1,31 @@
 package com.transitops.fuel;
 import com.transitops.fuel.dto.*;
 
+import com.transitops.common.ListQuery;
 import com.transitops.common.PageResponse;
 import com.transitops.common.ResourceNotFoundException;
+import com.transitops.common.SearchSpecs;
 import com.transitops.vehicle.Vehicle;
 import com.transitops.vehicle.VehicleRepository;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
+import java.util.Set;
 import java.util.UUID;
 
 @Service
 @Transactional
 public class FuelServiceImpl implements FuelService {
+
+    /** Whitelisted sortable properties; anything else falls back to the default. */
+    private static final Set<String> SORT_FIELDS = Set.of(
+            "fuelType", "liters", "costPerLiter", "totalCost", "cost",
+            "odometerKm", "loggedAt", "createdAt", "updatedAt");
 
     private final FuelRepository repository;
     private final VehicleRepository vehicleRepository;
@@ -29,9 +37,11 @@ public class FuelServiceImpl implements FuelService {
 
     @Override
     @Transactional(readOnly = true)
-    public PageResponse<FuelResponse> list(int page, int size) {
-        var pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "loggedAt"));
-        return PageResponse.of(repository.findAll(pageable), FuelResponse::from);
+    public PageResponse<FuelResponse> list(ListQuery query) {
+        Pageable pageable = query.toPageable(SORT_FIELDS, "loggedAt");
+        Specification<FuelLog> spec = SearchSpecs.textSearch(
+                query.searchTerm(), "vehicle.registrationNumber", "vehicle.name");
+        return PageResponse.of(repository.findAll(spec, pageable), FuelResponse::from);
     }
 
     @Override

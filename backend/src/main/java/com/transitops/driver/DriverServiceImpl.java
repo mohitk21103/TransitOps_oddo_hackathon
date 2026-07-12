@@ -1,22 +1,37 @@
 package com.transitops.driver;
 import com.transitops.driver.dto.*;
 
+import com.transitops.common.ListQuery;
 import com.transitops.common.PageResponse;
 import com.transitops.common.ResourceNotFoundException;
+import com.transitops.common.SearchSpecs;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
 @Transactional
 public class DriverServiceImpl implements DriverService {
+
+    /** Sortable response field -> JPA property; anything else falls back to the default. */
+    private static final Map<String, String> SORT_FIELDS = Map.ofEntries(
+            Map.entry("name", "fullName"),
+            Map.entry("licenseNumber", "licenseNumber"),
+            Map.entry("licenseCategory", "licenseCategory"),
+            Map.entry("licenseExpiry", "licenseExpiry"),
+            Map.entry("contactNumber", "contactNumber"),
+            Map.entry("safetyScore", "safetyScore"),
+            Map.entry("status", "status"),
+            Map.entry("createdAt", "createdAt"),
+            Map.entry("updatedAt", "updatedAt"));
 
     private final DriverRepository repository;
 
@@ -26,9 +41,11 @@ public class DriverServiceImpl implements DriverService {
 
     @Override
     @Transactional(readOnly = true)
-    public PageResponse<DriverResponse> list(int page, int size) {
-        var pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
-        return PageResponse.of(repository.findAll(pageable), DriverResponse::from);
+    public PageResponse<DriverResponse> list(ListQuery query) {
+        Pageable pageable = query.toPageable(SORT_FIELDS, "createdAt");
+        Specification<Driver> spec = SearchSpecs.textSearch(
+                query.searchTerm(), "fullName", "licenseNumber", "licenseCategory", "contactNumber");
+        return PageResponse.of(repository.findAll(spec, pageable), DriverResponse::from);
     }
 
     @Override

@@ -116,6 +116,12 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<!-- Some JVMs report the legacy tz id "Asia/Calcutta", which
+					     modern PostgreSQL tzdata rejects. Pin the canonical name so
+					     the JDBC connection's startup TimeZone is always valid. -->
+					<jvmArguments>-Duser.timezone=Asia/Kolkata</jvmArguments>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>

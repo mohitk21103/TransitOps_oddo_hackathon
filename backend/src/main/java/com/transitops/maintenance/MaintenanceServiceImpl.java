@@ -2,22 +2,30 @@ package com.transitops.maintenance;
 import com.transitops.maintenance.dto.*;
 
 import com.transitops.common.BusinessRuleException;
+import com.transitops.common.ListQuery;
 import com.transitops.common.PageResponse;
 import com.transitops.common.ResourceNotFoundException;
+import com.transitops.common.SearchSpecs;
 import com.transitops.vehicle.Vehicle;
 import com.transitops.vehicle.VehicleRepository;
 import com.transitops.vehicle.VehicleStatus;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
+import java.util.Set;
 import java.util.UUID;
 
 @Service
 @Transactional
 public class MaintenanceServiceImpl implements MaintenanceService {
+
+    /** Whitelisted sortable properties; anything else falls back to the default. */
+    private static final Set<String> SORT_FIELDS = Set.of(
+            "title", "type", "status", "cost", "scheduledFor",
+            "openedAt", "closedAt", "createdAt", "updatedAt");
 
     private final MaintenanceRepository repository;
     private final VehicleRepository vehicleRepository;
@@ -29,9 +37,11 @@ public class MaintenanceServiceImpl implements MaintenanceService {
 
     @Override
     @Transactional(readOnly = true)
-    public PageResponse<MaintenanceResponse> list(int page, int size) {
-        var pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "openedAt"));
-        return PageResponse.of(repository.findAll(pageable), MaintenanceResponse::from);
+    public PageResponse<MaintenanceResponse> list(ListQuery query) {
+        Pageable pageable = query.toPageable(SORT_FIELDS, "openedAt");
+        Specification<MaintenanceLog> spec = SearchSpecs.textSearch(
+                query.searchTerm(), "title", "description", "vehicle.registrationNumber");
+        return PageResponse.of(repository.findAll(spec, pageable), MaintenanceResponse::from);
     }
 
     @Override
