@@ -2,7 +2,7 @@
 
 **Smart Transport Operations Platform** — an end-to-end fleet, dispatch, maintenance and expense management system with a hard-enforced business-rules engine.
 
-> Built in 8 hours for `<Hackathon Name>` · Problem Statement: **TransitOps**
+> Built in 8 hours for `oddo hackathon` · Problem Statement: **TransitOps**
 
 [![Frontend](https://img.shields.io/badge/frontend-React%2019%20+%20TypeScript-61dafb)]()
 [![Backend](https://img.shields.io/badge/backend-Spring%20Boot%203-6db33f)]()
@@ -425,17 +425,6 @@ Accent: **amber** for primary actions. Layout: fixed sidebar + top bar with glob
 | **Server state** | TanStack Query | Automatic cache invalidation → live KPI updates |
 | **Charts** | Recharts | Declarative, small, good defaults |
 | **Deploy** | Vercel (web) · Railway (API) · Neon (DB) | — |
-
----
-
-## 👥 Team
-
-| Name | Role | GitHub |
-|---|---|---|
-| *(name)* | Backend — core, rules engine, trips, analytics | [@handle]() |
-| *(name)* | Backend — vehicles, drivers, maintenance, fuel | [@handle]() |
-| *(name)* | Frontend — design system, dashboard, analytics | [@handle]() |
-| *(name)* | Frontend — dispatcher, registry, drivers, maintenance | [@handle]() |
 
 ---
 
