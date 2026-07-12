@@ -17,7 +17,7 @@ function readString(key: string, fallback: string): string {
 }
 
 export const env: AppEnv = {
-  apiBaseUrl: readString('VITE_API_BASE_URL', 'http://localhost:4000/api'),
+  apiBaseUrl: readString('VITE_API_BASE_URL', 'http://localhost:9095/api'),
   appName: readString('VITE_APP_NAME', 'TransitOps'),
   isDev: import.meta.env.DEV,
   isProd: import.meta.env.PROD,

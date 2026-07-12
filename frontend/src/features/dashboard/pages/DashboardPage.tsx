@@ -13,6 +13,7 @@ import { percent } from '@/lib/utils'
 import { useDashboardKpis } from '../hooks/useDashboard'
 import { KpiCard } from '../components/KpiCard'
 import { VehicleStatusBars } from '../components/VehicleStatusBars'
+import { RecentTripsTable } from '../components/RecentTripsTable'
 import { DashboardFilterBar } from '../components/DashboardFilterBar'
 import type { DashboardFilters, DashboardKpis } from '../types'
 
@@ -25,6 +26,7 @@ const EMPTY_KPIS: DashboardKpis = {
   driversOnDuty: 0,
   fleetUtilization: 0,
   vehicleStatus: { available: 0, onTrip: 0, inShop: 0, retired: 0 },
+  recentTrips: [],
 }
 
 export function DashboardPage() {
@@ -95,6 +97,9 @@ export function DashboardPage() {
 
       {!isLoading && (
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+          <div className="lg:col-span-2">
+            <RecentTripsTable trips={kpis.recentTrips} />
+          </div>
           <div className="lg:col-span-1">
             <VehicleStatusBars breakdown={kpis.vehicleStatus} />
           </div>
