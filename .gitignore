@@ -1,3 +1,29 @@
+# ---- Claude / tooling ----
+.idea/
+.vscode/
+*.iml
+
+# ---- OS ----
+.DS_Store
+Thumbs.db
+
+# ---- Secrets / env ----
+.env
+.env.local
+*.env
+!.env.example
+
+# ================= Backend (Java / Maven) =================
+backend/target/
+backend/.mvn/wrapper/maven-wrapper.jar
+backend/HELP.md
+*.log
+*.class
+
+# ================= Frontend (Node / Vite) =================
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
 # Logs
 logs
 *.log
@@ -5,6 +31,9 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
+
+# ---- Misc ----
+test.ts
 lerna-debug.log*
 
 node_modules
