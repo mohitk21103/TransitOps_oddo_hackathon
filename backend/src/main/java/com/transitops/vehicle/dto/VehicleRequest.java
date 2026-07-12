@@ -1,4 +1,6 @@
-package com.transitops.vehicle;
+package com.transitops.vehicle.dto;
+import com.transitops.vehicle.VehicleType;
+import com.transitops.vehicle.VehicleStatus;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

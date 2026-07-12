@@ -1,4 +1,4 @@
-package com.transitops.expense;
+package com.transitops.expense.dto;
 
 import com.transitops.expense.ExpenseCategory;
 import jakarta.validation.constraints.NotNull;

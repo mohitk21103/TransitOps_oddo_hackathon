@@ -1,4 +1,4 @@
-package com.transitops.trip;
+package com.transitops.trip.dto;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;

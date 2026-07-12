@@ -1,4 +1,4 @@
-package com.transitops.role;
+package com.transitops.role.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

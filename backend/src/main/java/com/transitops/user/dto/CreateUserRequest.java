@@ -1,4 +1,4 @@
-package com.transitops.user;
+package com.transitops.user.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

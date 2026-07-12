@@ -1,4 +1,5 @@
 package com.transitops.reports;
+import com.transitops.reports.dto.*;
 
 import com.transitops.fuel.FuelLog;
 import com.transitops.fuel.FuelRepository;

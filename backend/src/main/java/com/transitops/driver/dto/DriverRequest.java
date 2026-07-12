@@ -1,4 +1,5 @@
-package com.transitops.driver;
+package com.transitops.driver.dto;
+import com.transitops.driver.DriverStatus;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

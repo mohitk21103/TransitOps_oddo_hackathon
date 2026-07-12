@@ -1,4 +1,4 @@
-package com.transitops.maintenance;
+package com.transitops.maintenance.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

@@ -1,4 +1,5 @@
 package com.transitops.fuel;
+import com.transitops.fuel.dto.*;
 
 import com.transitops.common.PageResponse;
 import com.transitops.common.ResourceNotFoundException;

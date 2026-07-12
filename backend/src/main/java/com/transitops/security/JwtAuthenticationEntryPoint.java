@@ -23,13 +23,10 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
                          AuthenticationException authException) throws IOException {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        // Same ApiResponse envelope as every other API (success=false).
         String body = """
-                {"success":false,"message":"Authentication required","path":"%s","timestamp":"%s"}"""
-                .formatted(escape(request.getRequestURI()), Instant.now());
+                {"success":false,"data":null,"message":"Authentication required","details":null,"timestamp":"%s"}"""
+                .formatted(Instant.now());
         response.getWriter().write(body);
-    }
-
-    private static String escape(String value) {
-        return value == null ? "" : value.replace("\\", "\\\\").replace("\"", "\\\"");
     }
 }
