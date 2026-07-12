@@ -33,7 +33,7 @@ export function AppRouter() {
         <Route
           path={ROUTES.reports}
           element={
-            <ProtectedRoute roles={[Role.Admin, Role.Manager]}>
+            <ProtectedRoute roles={[Role.FleetManager, Role.FinancialAnalyst]}>
               <ReportsPage />
             </ProtectedRoute>
           }

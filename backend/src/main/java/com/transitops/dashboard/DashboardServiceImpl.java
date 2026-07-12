@@ -49,8 +49,8 @@ public class DashboardServiceImpl implements DashboardService {
 
     @Override
     @Transactional(readOnly = true)
-    public DashboardStatsResponse getStats(VehicleType type, VehicleStatus status) {
-        Map<VehicleStatus, Long> counts = vehicleCounts(type, status);
+    public DashboardStatsResponse getStats(VehicleType type, VehicleStatus status, String region) {
+        Map<VehicleStatus, Long> counts = vehicleCounts(type, status, region);
 
         long available = counts.getOrDefault(VehicleStatus.AVAILABLE, 0L);
         long onTrip = counts.getOrDefault(VehicleStatus.ON_TRIP, 0L);
@@ -86,9 +86,10 @@ public class DashboardServiceImpl implements DashboardService {
                 recentTrips);
     }
 
-    private Map<VehicleStatus, Long> vehicleCounts(VehicleType type, VehicleStatus status) {
+    private Map<VehicleStatus, Long> vehicleCounts(VehicleType type, VehicleStatus status, String region) {
         Map<VehicleStatus, Long> counts = new EnumMap<>(VehicleStatus.class);
-        for (Object[] row : vehicleRepository.countGroupedByStatus(type, status)) {
+        String regionFilter = (region != null && !region.isBlank()) ? region : null;
+        for (Object[] row : vehicleRepository.countGroupedByStatus(type, status, regionFilter)) {
             counts.put((VehicleStatus) row[0], (Long) row[1]);
         }
         return counts;
