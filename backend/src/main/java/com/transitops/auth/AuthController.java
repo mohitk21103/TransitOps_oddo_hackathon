@@ -2,9 +2,7 @@ package com.transitops.auth;
 
 import com.transitops.role.Role;
 import com.transitops.user.User;
-import com.transitops.auth.LoginRequest;
 import com.transitops.common.ApiResponse;
-import com.transitops.auth.AuthResponse;
 import com.transitops.user.UserResponse;
 import com.transitops.common.ResourceNotFoundException;
 import com.transitops.user.UserRepository;
@@ -50,7 +48,6 @@ public class AuthController {
     public ApiResponse<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
         String email = request.email().trim().toLowerCase();
 
-        // Verifies password against the DB-backed UserDetailsService.
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(email, request.password()));
 
@@ -60,7 +57,7 @@ public class AuthController {
 
         List<String> roles = user.getRoles().stream().map(Role::getName).sorted().toList();
 
-        // JWT payload — the "proper wanted" claims the SPA reads.
+        // JWT payload — the claims the SPA reads.
         Map<String, Object> claims = new LinkedHashMap<>();
         claims.put("uid", user.getId().toString());
         claims.put("email", user.getEmail());

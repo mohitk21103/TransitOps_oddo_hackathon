@@ -3,7 +3,6 @@ import com.transitops.common.AuditableEntity;
 import com.transitops.vehicle.Vehicle;
 import com.transitops.driver.Driver;
 
-import com.transitops.trip.TripStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;

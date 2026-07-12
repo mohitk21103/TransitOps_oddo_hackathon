@@ -19,7 +19,7 @@ spring:
         format_sql: true
 
 server:
-  port: ${SERVER_PORT:4000}
+  port: ${SERVER_PORT:9095}
 
 # ---- Application-specific settings -----------------------------------------
 transitops:

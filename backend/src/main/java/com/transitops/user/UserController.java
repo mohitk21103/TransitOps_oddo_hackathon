@@ -1,10 +1,6 @@
 package com.transitops.user;
 
-import com.transitops.user.AssignRolesRequest;
-import com.transitops.user.CreateUserRequest;
 import com.transitops.common.ApiResponse;
-import com.transitops.user.UserResponse;
-import com.transitops.user.UserService;
 import jakarta.validation.Valid;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;

@@ -1,6 +1,5 @@
 package com.transitops.role;
 
-import com.transitops.role.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

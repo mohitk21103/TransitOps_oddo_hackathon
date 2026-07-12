@@ -1,8 +1,6 @@
 package com.transitops.vehicle;
 import com.transitops.common.AuditableEntity;
 
-import com.transitops.vehicle.VehicleStatus;
-import com.transitops.vehicle.VehicleType;
 import jakarta.persistence.Column;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;

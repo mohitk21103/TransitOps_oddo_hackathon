@@ -1,11 +1,7 @@
 package com.transitops.user;
 import com.transitops.role.RoleService;
 
-import com.transitops.user.User;
-import com.transitops.user.CreateUserRequest;
-import com.transitops.user.UserResponse;
 import com.transitops.common.ResourceNotFoundException;
-import com.transitops.user.UserRepository;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
