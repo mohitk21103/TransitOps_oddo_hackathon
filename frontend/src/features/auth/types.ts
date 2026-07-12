@@ -5,21 +5,19 @@ import type { ID } from '@/types'
  * hold several roles at once (backend returns a `roles` array).
  */
 export const Role = {
-  Admin: 'ADMIN',
-  Manager: 'MANAGER',
+  FleetManager: 'FLEET_MANAGER',
   Dispatcher: 'DISPATCHER',
-  Driver: 'DRIVER',
-  Viewer: 'VIEWER',
+  SafetyOfficer: 'SAFETY_OFFICER',
+  FinancialAnalyst: 'FINANCIAL_ANALYST',
 } as const
 
 export type Role = (typeof Role)[keyof typeof Role]
 
 export const ROLE_LABELS: Record<Role, string> = {
-  [Role.Admin]: 'Admin',
-  [Role.Manager]: 'Manager',
+  [Role.FleetManager]: 'Fleet Manager',
   [Role.Dispatcher]: 'Dispatcher',
-  [Role.Driver]: 'Driver',
-  [Role.Viewer]: 'Viewer',
+  [Role.SafetyOfficer]: 'Safety Officer',
+  [Role.FinancialAnalyst]: 'Financial Analyst',
 }
 
 /** Ordered role list for selectors. */

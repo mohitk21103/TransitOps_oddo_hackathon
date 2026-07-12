@@ -7,6 +7,7 @@ import com.transitops.role.Role;
 import com.transitops.security.JwtUtil;
 import com.transitops.user.User;
 import com.transitops.user.UserRepository;
+import com.transitops.user.dto.UserResponse;
 import jakarta.validation.Valid;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -67,13 +68,13 @@ public class AuthController {
         return ApiResponse.ok(new AuthResponse(token, AuthUser.from(user)), "Login successful");
     }
 
-    /** Current authenticated user's profile. */
+    /** Current authenticated user's profile ({ id, email, fullName, active, roles[] }). */
     @GetMapping("/me")
     @Transactional(readOnly = true)
-    public ApiResponse<AuthUser> me(Authentication authentication) {
+    public ApiResponse<UserResponse> me(Authentication authentication) {
         User user = userRepository.findByEmail(authentication.getName())
                 .orElseThrow(() -> ResourceNotFoundException.of("User", authentication.getName()));
-        return ApiResponse.ok(AuthUser.from(user));
+        return ApiResponse.ok(UserResponse.from(user));
     }
 
     /** Stateless logout — the client just drops its token. Provided for symmetry. */

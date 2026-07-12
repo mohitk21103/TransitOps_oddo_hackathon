@@ -30,6 +30,6 @@ export const NAV_ITEMS: NavItem[] = [
     label: 'Reports',
     to: ROUTES.reports,
     icon: BarChart3,
-    roles: [Role.Admin, Role.Manager],
+    roles: [Role.FleetManager, Role.FinancialAnalyst],
   },
 ]

@@ -19,10 +19,9 @@ export const VEHICLE_STATUS_LABELS: Record<VehicleStatus, string> = {
 export const VehicleType = {
   Truck: 'TRUCK',
   Van: 'VAN',
-  Bus: 'BUS',
   Car: 'CAR',
-  Pickup: 'PICKUP',
-  Trailer: 'TRAILER',
+  Bus: 'BUS',
+  Bike: 'BIKE',
 } as const
 
 export type VehicleType = (typeof VehicleType)[keyof typeof VehicleType]
@@ -30,10 +29,9 @@ export type VehicleType = (typeof VehicleType)[keyof typeof VehicleType]
 export const VEHICLE_TYPE_LABELS: Record<VehicleType, string> = {
   [VehicleType.Truck]: 'Truck',
   [VehicleType.Van]: 'Van',
-  [VehicleType.Bus]: 'Bus',
   [VehicleType.Car]: 'Car',
-  [VehicleType.Pickup]: 'Pickup',
-  [VehicleType.Trailer]: 'Trailer',
+  [VehicleType.Bus]: 'Bus',
+  [VehicleType.Bike]: 'Bike',
 }
 
 export interface Vehicle extends Timestamps {

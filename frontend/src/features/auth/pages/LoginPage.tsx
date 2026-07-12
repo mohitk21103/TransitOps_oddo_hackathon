@@ -10,19 +10,17 @@ import { loginSchema, type LoginFormValues } from '../schemas'
 import { ROLE_LABELS, ROLE_OPTIONS, Role } from '../types'
 
 const BRAND_ROLES = [
-  Role.Admin,
-  Role.Manager,
+  Role.FleetManager,
   Role.Dispatcher,
-  Role.Driver,
-  Role.Viewer,
+  Role.SafetyOfficer,
+  Role.FinancialAnalyst,
 ]
 
 const ROLE_SCOPE: { role: Role; scope: string }[] = [
-  { role: Role.Admin, scope: 'Full access, users & roles' },
-  { role: Role.Manager, scope: 'Fleet, Maintenance, Reports' },
-  { role: Role.Dispatcher, scope: 'Dashboard, Trips' },
-  { role: Role.Driver, scope: 'Own trips & logs' },
-  { role: Role.Viewer, scope: 'Read-only dashboards' },
+  { role: Role.FleetManager, scope: 'Fleet, maintenance, vehicle lifecycle' },
+  { role: Role.Dispatcher, scope: 'Trips, dispatch, deliveries' },
+  { role: Role.SafetyOfficer, scope: 'Drivers, licences, safety scores' },
+  { role: Role.FinancialAnalyst, scope: 'Fuel, expenses, reports' },
 ]
 
 const fieldLabel = 'text-xs font-medium uppercase tracking-wide text-slate-500'
