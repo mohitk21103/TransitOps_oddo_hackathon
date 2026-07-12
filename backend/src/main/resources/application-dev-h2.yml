@@ -1,8 +1,9 @@
 # ==========================================================================
-# DEV-H2 profile – zero-dependency in-memory DB so the app boots without
-# PostgreSQL. Handy for the hackathon demo / CI smoke tests.
+# DEV-H2 profile – zero-dependency in-memory DB for quick auth demos / CI.
+# The Postgres-specific migration (enums, generated columns, partial indexes)
+# is NOT applied here; Hibernate creates just the auth tables, and the
+# DataInitializer seeds roles + the admin user.
 # Run: SPRING_PROFILES_ACTIVE=dev-h2 ./mvnw spring-boot:run
-# H2 console: http://localhost:4000/h2-console  (JDBC URL: jdbc:h2:mem:transitops)
 # ==========================================================================
 spring:
   datasource:
@@ -12,9 +13,11 @@ spring:
     driver-class-name: org.h2.Driver
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create-drop
     show-sql: true
     database-platform: org.hibernate.dialect.H2Dialect
+  flyway:
+    enabled: false
   h2:
     console:
       enabled: true

@@ -1,6 +1,6 @@
 package com.transitops.security;
 
-import com.transitops.util.JwtUtil;
+import com.transitops.security.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -45,8 +45,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 && SecurityContextHolder.getContext().getAuthentication() == null) {
 
             String subject = jwtUtil.getSubject(token);
+            // Role claims are plain names (e.g. "ADMIN"); Spring authorities need the ROLE_ prefix.
             List<SimpleGrantedAuthority> authorities = jwtUtil.getRoles(token).stream()
-                    .map(SimpleGrantedAuthority::new)
+                    .map(role -> new SimpleGrantedAuthority(role.startsWith("ROLE_") ? role : "ROLE_" + role))
                     .toList();
 
             var authentication = new UsernamePasswordAuthenticationToken(subject, null, authorities);

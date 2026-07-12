@@ -1,11 +1,12 @@
 # ==========================================================================
-# LOCAL profile – developer's own machine against a local PostgreSQL.
-# Run: SPRING_PROFILES_ACTIVE=local ./mvnw spring-boot:run
+# DEV profile (default) – shared team PostgreSQL server.
+# Runs out of the box: ./mvnw spring-boot:run
 # Flyway owns the schema (V1__init.sql); Hibernate never mutates it.
+# Override any value via env vars (see backend/.env.example).
 # ==========================================================================
 spring:
   datasource:
-    url: ${DB_URL:jdbc:postgresql://localhost:5432/transitops}
+    url: ${DB_URL:jdbc:postgresql://72.60.205.221:5432/transitops}
     username: ${DB_USERNAME:transitops}
     password: ${DB_PASSWORD:team@101}
     driver-class-name: org.postgresql.Driver
@@ -17,7 +18,7 @@ spring:
   flyway:
     enabled: true
     baseline-on-migrate: true
-    baseline-version: 0
+    baseline-version: 0     # ensure V1 runs even when baselining a non-empty schema
 
 logging:
   level:
