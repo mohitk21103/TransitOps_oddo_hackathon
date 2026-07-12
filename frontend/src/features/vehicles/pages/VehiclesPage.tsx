@@ -1,13 +1,41 @@
-import { Plus, Truck } from 'lucide-react'
-import { Button, Card, EmptyState, PageHeader, Spinner } from '@/components/ui'
+import { useState } from 'react'
+import { Pencil, Plus, Trash2, Truck } from 'lucide-react'
+import {
+  Button,
+  Card,
+  ConfirmDialog,
+  EmptyState,
+  PageHeader,
+  Spinner,
+} from '@/components/ui'
 import { formatCurrency, formatNumber } from '@/lib/utils'
-import { useVehicles } from '../hooks/useVehicles'
-import { VEHICLE_TYPE_LABELS } from '../types'
+import { useDeleteVehicle, useVehicles } from '../hooks/useVehicles'
+import { VEHICLE_TYPE_LABELS, type Vehicle } from '../types'
 import { VehicleStatusBadge } from '../components/VehicleStatusBadge'
+import { VehicleFormModal } from '../components/VehicleFormModal'
 
 export function VehiclesPage() {
   const { data, isLoading, isError } = useVehicles()
   const vehicles = data?.items ?? []
+
+  const [formOpen, setFormOpen] = useState(false)
+  const [editing, setEditing] = useState<Vehicle | null>(null)
+  const [deleting, setDeleting] = useState<Vehicle | null>(null)
+  const deleteMutation = useDeleteVehicle()
+
+  const openCreate = () => {
+    setEditing(null)
+    setFormOpen(true)
+  }
+  const openEdit = (vehicle: Vehicle) => {
+    setEditing(vehicle)
+    setFormOpen(true)
+  }
+  const confirmDelete = async () => {
+    if (!deleting) return
+    await deleteMutation.mutateAsync(deleting.id).catch(() => {})
+    setDeleting(null)
+  }
 
   return (
     <div className="flex flex-col gap-6">
@@ -15,7 +43,9 @@ export function VehiclesPage() {
         title="Vehicle Registry"
         description="Master list of fleet vehicles and their current status."
         action={
-          <Button leftIcon={<Plus className="h-4 w-4" />}>Add Vehicle</Button>
+          <Button leftIcon={<Plus className="h-4 w-4" />} onClick={openCreate}>
+            Add Vehicle
+          </Button>
         }
       />
 
@@ -34,6 +64,11 @@ export function VehiclesPage() {
           icon={Truck}
           title="No vehicles yet"
           description="Register your first vehicle to start dispatching trips."
+          action={
+            <Button leftIcon={<Plus className="h-4 w-4" />} onClick={openCreate}>
+              Add Vehicle
+            </Button>
+          }
         />
       ) : (
         <Card className="overflow-hidden">
@@ -48,6 +83,7 @@ export function VehiclesPage() {
                   <th className="px-5 py-3 font-medium">Odometer</th>
                   <th className="px-5 py-3 font-medium">Cost</th>
                   <th className="px-5 py-3 font-medium">Status</th>
+                  <th className="px-5 py-3 text-right font-medium">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
@@ -71,6 +107,26 @@ export function VehiclesPage() {
                     <td className="px-5 py-3">
                       <VehicleStatusBadge status={vehicle.status} />
                     </td>
+                    <td className="px-5 py-3">
+                      <div className="flex justify-end gap-1">
+                        <button
+                          type="button"
+                          onClick={() => openEdit(vehicle)}
+                          aria-label="Edit"
+                          className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100 hover:text-indigo-600 dark:hover:bg-slate-800"
+                        >
+                          <Pencil className="h-4 w-4" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setDeleting(vehicle)}
+                          aria-label="Delete"
+                          className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100 hover:text-red-600 dark:hover:bg-slate-800"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      </div>
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -78,6 +134,22 @@ export function VehiclesPage() {
           </div>
         </Card>
       )}
+
+      <VehicleFormModal
+        open={formOpen}
+        onClose={() => setFormOpen(false)}
+        vehicle={editing}
+      />
+
+      <ConfirmDialog
+        open={Boolean(deleting)}
+        title="Delete vehicle"
+        message={`Remove ${deleting?.registrationNumber} from the registry? This cannot be undone.`}
+        confirmLabel="Delete"
+        isLoading={deleteMutation.isPending}
+        onConfirm={confirmDelete}
+        onClose={() => setDeleting(null)}
+      />
     </div>
   )
 }
