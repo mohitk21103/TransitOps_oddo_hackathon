@@ -1,6 +1,5 @@
 package com.transitops.user;
 
-import com.transitops.user.User;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 

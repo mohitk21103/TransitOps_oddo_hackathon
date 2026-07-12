@@ -1,14 +1,11 @@
 package com.transitops.auth;
 
-import com.transitops.role.Role;
-import com.transitops.user.User;
-import com.transitops.auth.LoginRequest;
 import com.transitops.common.ApiResponse;
-import com.transitops.auth.AuthResponse;
-import com.transitops.user.UserResponse;
 import com.transitops.common.ResourceNotFoundException;
-import com.transitops.user.UserRepository;
+import com.transitops.role.Role;
 import com.transitops.security.JwtUtil;
+import com.transitops.user.User;
+import com.transitops.user.UserRepository;
 import jakarta.validation.Valid;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -26,8 +23,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Authentication endpoints. Login verifies credentials, issues a JWT whose
- * payload carries uid / name / email / roles, and returns the user profile.
+ * Authentication endpoints. Login verifies credentials, issues a JWT, and
+ * returns the SPA-shaped session { token, user: { id, name, email, role } }.
  */
 @RestController
 @RequestMapping("/api/auth")
@@ -50,7 +47,6 @@ public class AuthController {
     public ApiResponse<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
         String email = request.email().trim().toLowerCase();
 
-        // Verifies password against the DB-backed UserDetailsService.
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(email, request.password()));
 
@@ -60,7 +56,6 @@ public class AuthController {
 
         List<String> roles = user.getRoles().stream().map(Role::getName).sorted().toList();
 
-        // JWT payload — the "proper wanted" claims the SPA reads.
         Map<String, Object> claims = new LinkedHashMap<>();
         claims.put("uid", user.getId().toString());
         claims.put("email", user.getEmail());
@@ -68,19 +63,21 @@ public class AuthController {
         claims.put("roles", roles);
 
         String token = jwtUtil.generateToken(user.getEmail(), claims);
-
-        return ApiResponse.ok(
-                AuthResponse.bearer(token, user.getEmail(), roles, jwtUtil.getExpirationMs()),
-                "Login successful");
+        return ApiResponse.ok(new AuthResponse(token, AuthUser.from(user)), "Login successful");
     }
 
-    /** Current authenticated user's profile (roles included). */
+    /** Current authenticated user's profile. */
     @GetMapping("/me")
     @Transactional(readOnly = true)
-    public ApiResponse<UserResponse> me(Authentication authentication) {
-        String email = authentication.getName();
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> ResourceNotFoundException.of("User", email));
-        return ApiResponse.ok(UserResponse.from(user));
+    public ApiResponse<AuthUser> me(Authentication authentication) {
+        User user = userRepository.findByEmail(authentication.getName())
+                .orElseThrow(() -> ResourceNotFoundException.of("User", authentication.getName()));
+        return ApiResponse.ok(AuthUser.from(user));
+    }
+
+    /** Stateless logout — the client just drops its token. Provided for symmetry. */
+    @PostMapping("/logout")
+    public ApiResponse<Void> logout() {
+        return ApiResponse.ok(null, "Logged out");
     }
 }

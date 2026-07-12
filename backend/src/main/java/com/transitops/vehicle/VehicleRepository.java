@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface VehicleRepository extends JpaRepository<Vehicle, UUID> {
@@ -26,4 +27,11 @@ public interface VehicleRepository extends JpaRepository<Vehicle, UUID> {
             """)
     List<Object[]> countGroupedByStatus(@Param("type") VehicleType type,
                                         @Param("status") VehicleStatus status);
+    boolean existsByRegistrationNumberIgnoreCase(String registrationNumber);
+
+    Optional<Vehicle> findByRegistrationNumberIgnoreCase(String registrationNumber);
+
+    List<Vehicle> findByStatus(VehicleStatus status);
+
+    long countByStatus(VehicleStatus status);
 }

@@ -4,7 +4,6 @@ import com.transitops.vehicle.Vehicle;
 import com.transitops.driver.Driver;
 import com.transitops.trip.Trip;
 
-import com.transitops.fuel.FuelType;
 import jakarta.persistence.Column;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -46,6 +45,10 @@ public class FuelLog extends AuditableEntity {
 
     @Column(name = "total_cost", insertable = false, updatable = false)
     private BigDecimal totalCost;
+
+    /** Total fuel cost as logged by the operator (frontend contract). */
+    @Column
+    private BigDecimal cost;
 
     @Column(name = "odometer_km")
     private BigDecimal odometerKm;
@@ -106,6 +109,14 @@ public class FuelLog extends AuditableEntity {
 
     public BigDecimal getTotalCost() {
         return totalCost;
+    }
+
+    public BigDecimal getCost() {
+        return cost;
+    }
+
+    public void setCost(BigDecimal cost) {
+        this.cost = cost;
     }
 
     public BigDecimal getOdometerKm() {

@@ -16,9 +16,8 @@ import java.util.HashSet;
 import java.util.List;
 
 /**
- * Idempotent bootstrap: ensures the RBAC roles and a default admin account
- * exist. Safe to run on every startup and on any environment (Postgres where
- * Flyway already seeded roles, or H2 where it did not).
+ * Idempotent bootstrap: ensures the four RBAC roles and one demo user per role
+ * exist. Safe to run on every startup and on any environment.
  */
 @Component
 @Order(1)
@@ -26,8 +25,17 @@ public class DataInitializer implements CommandLineRunner {
 
     private static final Logger log = LoggerFactory.getLogger(DataInitializer.class);
 
-    private static final String ADMIN_EMAIL = "admin@transitops.com";
-    private static final String ADMIN_PASSWORD = "password";
+    private static final String DEMO_PASSWORD = "demo1234";
+
+    /** email, full name, role — one demo account per persona. */
+    private record DemoUser(String email, String name, RoleName role) {
+    }
+
+    private static final List<DemoUser> DEMO_USERS = List.of(
+            new DemoUser("fleet@transitops.in", "Fleet Manager", RoleName.FLEET_MANAGER),
+            new DemoUser("dispatch@transitops.in", "Dispatcher", RoleName.DISPATCHER),
+            new DemoUser("safety@transitops.in", "Safety Officer", RoleName.SAFETY_OFFICER),
+            new DemoUser("finance@transitops.in", "Financial Analyst", RoleName.FINANCIAL_ANALYST));
 
     private final RoleRepository roleRepository;
     private final UserRepository userRepository;
@@ -50,12 +58,14 @@ public class DataInitializer implements CommandLineRunner {
             }
         }
 
-        if (!userRepository.existsByEmail(ADMIN_EMAIL)) {
-            Role adminRole = roleRepository.findByName(RoleName.ADMIN.name()).orElseThrow();
-            User admin = new User(ADMIN_EMAIL, passwordEncoder.encode(ADMIN_PASSWORD), "TransitOps Admin");
-            admin.setRoles(new HashSet<>(List.of(adminRole)));
-            userRepository.save(admin);
-            log.info("Seeded default admin user {} (password: {})", ADMIN_EMAIL, ADMIN_PASSWORD);
+        for (DemoUser demo : DEMO_USERS) {
+            if (!userRepository.existsByEmail(demo.email())) {
+                Role role = roleRepository.findByName(demo.role().name()).orElseThrow();
+                User user = new User(demo.email(), passwordEncoder.encode(DEMO_PASSWORD), demo.name());
+                user.setRoles(new HashSet<>(List.of(role)));
+                userRepository.save(user);
+                log.info("Seeded demo user {} ({})", demo.email(), demo.role());
+            }
         }
     }
 }

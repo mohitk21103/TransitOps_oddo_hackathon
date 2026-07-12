@@ -12,10 +12,10 @@ public record ApiError(
         String error,
         String message,
         String path,
-        Map<String, String> fieldErrors,
+        Map<String, String> details,   // field-level validation errors (frontend reads `details`)
         Instant timestamp
 ) {
-    public static ApiError of(int status, String error, String message, String path, Map<String, String> fieldErrors) {
-        return new ApiError(false, status, error, message, path, fieldErrors, Instant.now());
+    public static ApiError of(int status, String error, String message, String path, Map<String, String> details) {
+        return new ApiError(false, status, error, message, path, details, Instant.now());
     }
 }

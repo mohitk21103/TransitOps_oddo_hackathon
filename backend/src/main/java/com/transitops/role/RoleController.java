@@ -1,9 +1,6 @@
 package com.transitops.role;
 
-import com.transitops.role.CreateRoleRequest;
 import com.transitops.common.ApiResponse;
-import com.transitops.role.RoleResponse;
-import com.transitops.role.RoleService;
 import jakarta.validation.Valid;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,7 +28,7 @@ public class RoleController {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('FLEET_MANAGER')")
     public ApiResponse<RoleResponse> create(@Valid @RequestBody CreateRoleRequest request) {
         return ApiResponse.ok(roleService.create(request), "Role created");
     }

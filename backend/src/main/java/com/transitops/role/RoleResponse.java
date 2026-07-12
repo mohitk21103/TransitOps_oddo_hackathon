@@ -1,6 +1,5 @@
 package com.transitops.role;
 
-import com.transitops.role.Role;
 
 import java.util.UUID;
 

@@ -1,8 +1,6 @@
 package com.transitops.vehicle;
 import com.transitops.common.AuditableEntity;
 
-import com.transitops.vehicle.VehicleStatus;
-import com.transitops.vehicle.VehicleType;
 import jakarta.persistence.Column;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -43,7 +41,18 @@ public class Vehicle extends AuditableEntity {
     @Column(name = "acquired_at")
     private LocalDate acquiredAt;
 
+    @Column(length = 80)
+    private String region;
+
     protected Vehicle() {
+    }
+
+    public String getRegion() {
+        return region;
+    }
+
+    public void setRegion(String region) {
+        this.region = region;
     }
 
     public String getRegistrationNumber() {
