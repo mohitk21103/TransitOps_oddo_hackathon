@@ -1,19 +1,54 @@
+import { useState } from 'react'
 import { Plus, Route } from 'lucide-react'
-import { Button, Card, EmptyState, PageHeader, Spinner } from '@/components/ui'
+import {
+  Button,
+  Card,
+  ConfirmDialog,
+  EmptyState,
+  PageHeader,
+  Spinner,
+} from '@/components/ui'
 import { formatDistance, formatNumber } from '@/lib/utils'
-import { useTrips } from '../hooks/useTrips'
+import {
+  useCancelTrip,
+  useDispatchTrip,
+  useTrips,
+} from '../hooks/useTrips'
+import { TripStatus, type Trip } from '../types'
 import { TripStatusBadge } from '../components/TripStatusBadge'
+import { TripFormModal } from '../components/TripFormModal'
+import { CompleteTripModal } from '../components/CompleteTripModal'
 
 export function TripsPage() {
   const { data, isLoading, isError } = useTrips()
   const trips = data?.items ?? []
+
+  const [formOpen, setFormOpen] = useState(false)
+  const [completing, setCompleting] = useState<Trip | null>(null)
+  const [cancelling, setCancelling] = useState<Trip | null>(null)
+
+  const dispatchMutation = useDispatchTrip()
+  const cancelMutation = useCancelTrip()
+
+  const confirmCancel = async () => {
+    if (!cancelling) return
+    await cancelMutation.mutateAsync(cancelling.id).catch(() => {})
+    setCancelling(null)
+  }
 
   return (
     <div className="flex flex-col gap-6">
       <PageHeader
         title="Trip Management"
         description="Create, dispatch and track deliveries across the fleet."
-        action={<Button leftIcon={<Plus className="h-4 w-4" />}>New Trip</Button>}
+        action={
+          <Button
+            leftIcon={<Plus className="h-4 w-4" />}
+            onClick={() => setFormOpen(true)}
+          >
+            New Trip
+          </Button>
+        }
       />
 
       {isLoading ? (
@@ -31,6 +66,14 @@ export function TripsPage() {
           icon={Route}
           title="No trips yet"
           description="Create a trip to dispatch a vehicle and driver."
+          action={
+            <Button
+              leftIcon={<Plus className="h-4 w-4" />}
+              onClick={() => setFormOpen(true)}
+            >
+              New Trip
+            </Button>
+          }
         />
       ) : (
         <Card className="overflow-hidden">
@@ -42,6 +85,7 @@ export function TripsPage() {
                   <th className="px-5 py-3 font-medium">Cargo</th>
                   <th className="px-5 py-3 font-medium">Distance</th>
                   <th className="px-5 py-3 font-medium">Status</th>
+                  <th className="px-5 py-3 text-right font-medium">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
@@ -57,6 +101,37 @@ export function TripsPage() {
                     <td className="px-5 py-3">
                       <TripStatusBadge status={trip.status} />
                     </td>
+                    <td className="px-5 py-3">
+                      <div className="flex justify-end gap-2">
+                        {trip.status === TripStatus.Draft && (
+                          <Button
+                            size="sm"
+                            onClick={() => dispatchMutation.mutate(trip.id)}
+                            isLoading={
+                              dispatchMutation.isPending &&
+                              dispatchMutation.variables === trip.id
+                            }
+                          >
+                            Dispatch
+                          </Button>
+                        )}
+                        {trip.status === TripStatus.Dispatched && (
+                          <Button size="sm" onClick={() => setCompleting(trip)}>
+                            Complete
+                          </Button>
+                        )}
+                        {(trip.status === TripStatus.Draft ||
+                          trip.status === TripStatus.Dispatched) && (
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => setCancelling(trip)}
+                          >
+                            Cancel
+                          </Button>
+                        )}
+                      </div>
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -64,6 +139,24 @@ export function TripsPage() {
           </div>
         </Card>
       )}
+
+      <TripFormModal open={formOpen} onClose={() => setFormOpen(false)} />
+
+      <CompleteTripModal
+        open={Boolean(completing)}
+        trip={completing}
+        onClose={() => setCompleting(null)}
+      />
+
+      <ConfirmDialog
+        open={Boolean(cancelling)}
+        title="Cancel trip"
+        message={`Cancel the trip ${cancelling?.source} → ${cancelling?.destination}? The vehicle and driver will be freed.`}
+        confirmLabel="Cancel Trip"
+        isLoading={cancelMutation.isPending}
+        onConfirm={confirmCancel}
+        onClose={() => setCancelling(null)}
+      />
     </div>
   )
 }
