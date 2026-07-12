@@ -32,7 +32,7 @@ export interface Driver extends Timestamps {
   licenseNumber: string
   licenseCategory: LicenseCategory
   licenseExpiry: ISODateString
-  contactNumber: string
+  contactNumber?: string
   safetyScore: number
   status: DriverStatus
 }

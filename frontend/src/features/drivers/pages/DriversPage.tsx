@@ -1,20 +1,50 @@
-import { Plus, UserRound } from 'lucide-react'
-import { Badge, Button, Card, EmptyState, PageHeader, Spinner } from '@/components/ui'
+import { useState } from 'react'
+import { Pencil, Plus, Trash2, UserRound } from 'lucide-react'
+import {
+  Badge,
+  Button,
+  Card,
+  ConfirmDialog,
+  EmptyState,
+  PageHeader,
+  Spinner,
+} from '@/components/ui'
 import { formatDate, daysUntil } from '@/lib/utils'
 import { LICENSE_EXPIRY_WARNING_DAYS } from '@/config/constants'
-import { useDrivers } from '../hooks/useDrivers'
+import { useDeleteDriver, useDrivers } from '../hooks/useDrivers'
 import { DriverStatusBadge } from '../components/DriverStatusBadge'
+import { DriverFormModal } from '../components/DriverFormModal'
+import type { Driver } from '../types'
 
 export function DriversPage() {
   const { data, isLoading, isError } = useDrivers()
   const drivers = data?.items ?? []
+
+  const [formOpen, setFormOpen] = useState(false)
+  const [editing, setEditing] = useState<Driver | null>(null)
+  const [deleting, setDeleting] = useState<Driver | null>(null)
+  const deleteMutation = useDeleteDriver()
+
+  const openCreate = () => {
+    setEditing(null)
+    setFormOpen(true)
+  }
+  const confirmDelete = async () => {
+    if (!deleting) return
+    await deleteMutation.mutateAsync(deleting.id).catch(() => {})
+    setDeleting(null)
+  }
 
   return (
     <div className="flex flex-col gap-6">
       <PageHeader
         title="Driver Management"
         description="Driver profiles, licenses and safety scores."
-        action={<Button leftIcon={<Plus className="h-4 w-4" />}>Add Driver</Button>}
+        action={
+          <Button leftIcon={<Plus className="h-4 w-4" />} onClick={openCreate}>
+            Add Driver
+          </Button>
+        }
       />
 
       {isLoading ? (
@@ -32,6 +62,11 @@ export function DriversPage() {
           icon={UserRound}
           title="No drivers yet"
           description="Add drivers to assign them to trips."
+          action={
+            <Button leftIcon={<Plus className="h-4 w-4" />} onClick={openCreate}>
+              Add Driver
+            </Button>
+          }
         />
       ) : (
         <Card className="overflow-hidden">
@@ -44,6 +79,7 @@ export function DriversPage() {
                   <th className="px-5 py-3 font-medium">Expiry</th>
                   <th className="px-5 py-3 font-medium">Safety</th>
                   <th className="px-5 py-3 font-medium">Status</th>
+                  <th className="px-5 py-3 text-right font-medium">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
@@ -79,6 +115,29 @@ export function DriversPage() {
                       <td className="px-5 py-3">
                         <DriverStatusBadge status={driver.status} />
                       </td>
+                      <td className="px-5 py-3">
+                        <div className="flex justify-end gap-1">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setEditing(driver)
+                              setFormOpen(true)
+                            }}
+                            aria-label="Edit"
+                            className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100 hover:text-indigo-600 dark:hover:bg-slate-800"
+                          >
+                            <Pencil className="h-4 w-4" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setDeleting(driver)}
+                            aria-label="Delete"
+                            className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100 hover:text-red-600 dark:hover:bg-slate-800"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </button>
+                        </div>
+                      </td>
                     </tr>
                   )
                 })}
@@ -87,6 +146,22 @@ export function DriversPage() {
           </div>
         </Card>
       )}
+
+      <DriverFormModal
+        open={formOpen}
+        onClose={() => setFormOpen(false)}
+        driver={editing}
+      />
+
+      <ConfirmDialog
+        open={Boolean(deleting)}
+        title="Delete driver"
+        message={`Remove ${deleting?.name}? This cannot be undone.`}
+        confirmLabel="Delete"
+        isLoading={deleteMutation.isPending}
+        onConfirm={confirmDelete}
+        onClose={() => setDeleting(null)}
+      />
     </div>
   )
 }
