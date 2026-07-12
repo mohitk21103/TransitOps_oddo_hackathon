@@ -1,14 +1,17 @@
 # ==========================================================================
-# TransitOps – base configuration (shared by all profiles)
-# Active profile is chosen via SPRING_PROFILES_ACTIVE (defaults to "local").
-# Every secret/host is overridable by an environment variable so the same
-# jar runs unchanged in local and production.
+# TransitOps – base configuration (shared by ALL profiles).
+# Choose an environment with SPRING_PROFILES_ACTIVE (defaults to "dev"):
+#   dev     -> shared team PostgreSQL (72.60.205.221)  [runs out of the box]
+#   local   -> your own localhost PostgreSQL
+#   prod    -> production; every value from environment variables
+#   dev-h2  -> in-memory H2, no database needed
+# Every secret/host is env-overridable so the same jar runs unchanged anywhere.
 # ==========================================================================
 spring:
   application:
     name: transitops
   profiles:
-    default: local
+    default: dev
   jpa:
     open-in-view: false
     properties:

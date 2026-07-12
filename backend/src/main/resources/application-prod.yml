@@ -1,7 +1,7 @@
 # ==========================================================================
-# PRODUCTION profile – everything comes from environment variables.
+# PRODUCTION profile – everything from environment variables.
 # Run: SPRING_PROFILES_ACTIVE=prod java -jar backend.jar
-# NOTHING sensitive is hard-coded; JWT_SECRET & DB_* MUST be provided.
+# JWT_SECRET & DB_* MUST be provided. Flyway owns the schema.
 # ==========================================================================
 spring:
   datasource:
@@ -14,10 +14,13 @@ spring:
       minimum-idle: ${DB_POOL_MIN:5}
   jpa:
     hibernate:
-      # Never auto-mutate a production schema; use migrations (Flyway/Liquibase).
-      ddl-auto: validate
+      ddl-auto: none          # schema is managed by Flyway migrations
     show-sql: false
     database-platform: org.hibernate.dialect.PostgreSQLDialect
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    baseline-version: 0
 
 logging:
   level:
