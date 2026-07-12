@@ -1,4 +1,5 @@
-package com.transitops.fuel;
+package com.transitops.fuel.dto;
+import com.transitops.fuel.FuelLog;
 
 import java.math.BigDecimal;
 import java.time.Instant;

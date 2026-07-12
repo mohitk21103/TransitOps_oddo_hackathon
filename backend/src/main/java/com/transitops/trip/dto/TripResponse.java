@@ -1,4 +1,6 @@
-package com.transitops.trip;
+package com.transitops.trip.dto;
+import com.transitops.trip.Trip;
+import com.transitops.trip.TripStatus;
 
 import java.math.BigDecimal;
 import java.time.Instant;

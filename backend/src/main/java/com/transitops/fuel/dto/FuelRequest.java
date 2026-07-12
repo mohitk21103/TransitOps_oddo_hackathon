@@ -1,4 +1,4 @@
-package com.transitops.fuel;
+package com.transitops.fuel.dto;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;

@@ -1,4 +1,6 @@
-package com.transitops.driver;
+package com.transitops.driver.dto;
+import com.transitops.driver.Driver;
+import com.transitops.driver.DriverStatus;
 
 import java.math.BigDecimal;
 import java.time.Instant;

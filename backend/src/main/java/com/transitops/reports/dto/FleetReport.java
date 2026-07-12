@@ -1,4 +1,4 @@
-package com.transitops.reports;
+package com.transitops.reports.dto;
 
 import java.math.BigDecimal;
 import java.util.List;

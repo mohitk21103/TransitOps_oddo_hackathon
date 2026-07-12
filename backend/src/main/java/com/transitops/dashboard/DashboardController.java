@@ -1,4 +1,5 @@
 package com.transitops.dashboard;
+import com.transitops.dashboard.dto.*;
 
 import com.transitops.common.ApiResponse;
 import com.transitops.vehicle.VehicleStatus;

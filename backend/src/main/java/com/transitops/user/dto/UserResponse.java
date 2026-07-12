@@ -1,4 +1,6 @@
-package com.transitops.user;
+package com.transitops.user.dto;
+import com.transitops.user.User;
+import com.transitops.role.Role;
 
 import com.transitops.role.Role;
 

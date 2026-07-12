@@ -1,4 +1,5 @@
 package com.transitops.reports;
+import com.transitops.reports.dto.*;
 
 public interface ReportService {
 

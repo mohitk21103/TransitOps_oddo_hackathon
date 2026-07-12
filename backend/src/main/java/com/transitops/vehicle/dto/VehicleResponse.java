@@ -1,4 +1,7 @@
-package com.transitops.vehicle;
+package com.transitops.vehicle.dto;
+import com.transitops.vehicle.Vehicle;
+import com.transitops.vehicle.VehicleType;
+import com.transitops.vehicle.VehicleStatus;
 
 import java.math.BigDecimal;
 import java.time.Instant;

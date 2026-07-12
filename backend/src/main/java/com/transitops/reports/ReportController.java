@@ -1,4 +1,5 @@
 package com.transitops.reports;
+import com.transitops.reports.dto.*;
 
 import com.transitops.common.ApiResponse;
 import org.springframework.http.HttpHeaders;

@@ -1,4 +1,5 @@
-package com.transitops.auth;
+package com.transitops.auth.dto;
+import com.transitops.user.User;
 
 import com.transitops.user.User;
 

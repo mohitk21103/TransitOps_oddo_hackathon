@@ -1,4 +1,5 @@
 package com.transitops.fuel;
+import com.transitops.fuel.dto.*;
 
 import com.transitops.common.ApiResponse;
 import com.transitops.common.PageResponse;
