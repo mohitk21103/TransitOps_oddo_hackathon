@@ -9,10 +9,10 @@ export interface FuelLog extends Timestamps {
   date: ISODateString
 }
 
-export type FuelLogPayload = Pick<
-  FuelLog,
-  'vehicleId' | 'liters' | 'cost' | 'odometer' | 'date'
->
+export type FuelLogPayload = Pick<FuelLog, 'vehicleId' | 'liters' | 'cost'> & {
+  odometer?: number
+  date?: ISODateString
+}
 
 export const ExpenseCategory = {
   Toll: 'TOLL',
@@ -41,7 +41,9 @@ export interface Expense extends Timestamps {
   date: ISODateString
 }
 
-export type ExpensePayload = Pick<
-  Expense,
-  'vehicleId' | 'tripId' | 'category' | 'amount' | 'note' | 'date'
->
+export type ExpensePayload = Pick<Expense, 'category' | 'amount'> & {
+  vehicleId?: ID
+  tripId?: ID
+  note?: string
+  date?: ISODateString
+}
