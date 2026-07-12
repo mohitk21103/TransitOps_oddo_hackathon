@@ -3,6 +3,7 @@ import {
   Fuel,
   LayoutDashboard,
   Route,
+  Settings,
   Truck,
   UserRound,
   Wrench,
@@ -32,4 +33,5 @@ export const NAV_ITEMS: NavItem[] = [
     icon: BarChart3,
     roles: [Role.Admin, Role.Manager],
   },
+  { label: 'Settings', to: ROUTES.settings, icon: Settings },
 ]

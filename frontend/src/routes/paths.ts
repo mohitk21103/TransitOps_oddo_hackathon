@@ -12,4 +12,5 @@ export const ROUTES = {
   maintenance: '/maintenance',
   fuel: '/fuel',
   reports: '/reports',
+  settings: '/settings',
 } as const
