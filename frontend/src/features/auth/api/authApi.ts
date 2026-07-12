@@ -13,9 +13,9 @@ function toUser(dto: UserProfileDto): User {
   return {
     id: dto.id,
     email: dto.email,
-    name: dto.fullName,
-    active: dto.active,
-    roles: dto.roles as Role[],
+    name: dto.name,
+    active: true,
+    roles: dto.role ? [dto.role as Role] : [],
   }
 }
 

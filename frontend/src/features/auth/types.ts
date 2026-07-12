@@ -53,10 +53,9 @@ export interface AuthResponse {
 /** Raw payload from `GET /api/auth/me` (backend `UserResponse`). */
 export interface UserProfileDto {
   id: string
+  name: string
   email: string
-  fullName: string
-  active: boolean
-  roles: string[]
+  role: string
 }
 
 export interface AuthSession {
