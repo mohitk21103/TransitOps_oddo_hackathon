@@ -11,6 +11,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.List;
@@ -50,22 +51,25 @@ public class DataInitializer implements CommandLineRunner {
     }
 
     @Override
+    @Transactional
     public void run(String... args) {
-        for (RoleName role : RoleName.values()) {
-            if (!roleRepository.existsByName(role.name())) {
+        // Seed only when the tables are empty — a single count() each, instead of
+        // one existence query per role/user on every startup.
+        if (roleRepository.count() == 0) {
+            for (RoleName role : RoleName.values()) {
                 roleRepository.save(new Role(role.name(), role.getDescription()));
-                log.info("Seeded role {}", role.name());
             }
+            log.info("Seeded {} RBAC roles", RoleName.values().length);
         }
 
-        for (DemoUser demo : DEMO_USERS) {
-            if (!userRepository.existsByEmail(demo.email())) {
+        if (userRepository.count() == 0) {
+            for (DemoUser demo : DEMO_USERS) {
                 Role role = roleRepository.findByName(demo.role().name()).orElseThrow();
                 User user = new User(demo.email(), passwordEncoder.encode(DEMO_PASSWORD), demo.name());
                 user.setRoles(new HashSet<>(List.of(role)));
                 userRepository.save(user);
-                log.info("Seeded demo user {} ({})", demo.email(), demo.role());
             }
+            log.info("Seeded {} demo users", DEMO_USERS.size());
         }
     }
 }
