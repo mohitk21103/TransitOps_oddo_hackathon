@@ -10,6 +10,7 @@ import { TripsPage } from '@/features/trips'
 import { MaintenancePage } from '@/features/maintenance'
 import { FuelPage } from '@/features/fuel'
 import { ReportsPage } from '@/features/reports'
+import { SettingsPage } from '@/features/settings'
 import { ROUTES } from '@/routes/paths'
 
 export function AppRouter() {
@@ -38,6 +39,7 @@ export function AppRouter() {
             </ProtectedRoute>
           }
         />
+        <Route path={ROUTES.settings} element={<SettingsPage />} />
       </Route>
 
       <Route path="*" element={<Navigate to={ROUTES.dashboard} replace />} />

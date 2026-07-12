@@ -17,7 +17,10 @@ function readString(key: string, fallback: string): string {
 }
 
 export const env: AppEnv = {
-  apiBaseUrl: readString('VITE_API_BASE_URL', 'http://localhost:9095/api'),
+  // Relative by default so requests stay same-origin and use the Vite proxy
+  // (defined in vite.config.ts) — this keeps CORS out of the picture, including
+  // when the frontend is served through an ngrok tunnel.
+  apiBaseUrl: readString('VITE_API_BASE_URL', '/api'),
   appName: readString('VITE_APP_NAME', 'TransitOps'),
   isDev: import.meta.env.DEV,
   isProd: import.meta.env.PROD,
