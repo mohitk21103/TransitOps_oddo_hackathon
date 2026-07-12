@@ -24,11 +24,14 @@ public class MaintenanceLog extends AuditableEntity {
     @JoinColumn(name = "vehicle_id", nullable = false)
     private Vehicle vehicle;
 
+    @Column(length = 160)
+    private String title;
+
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 24)
+    @Column(length = 24)
     private MaintenanceType type;
 
-    @Column(nullable = false, length = 300)
+    @Column(length = 300)
     private String description;
 
     @Enumerated(EnumType.STRING)
@@ -55,6 +58,14 @@ public class MaintenanceLog extends AuditableEntity {
 
     public boolean isActive() {
         return status == MaintenanceStatus.OPEN || status == MaintenanceStatus.IN_PROGRESS;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public Vehicle getVehicle() {

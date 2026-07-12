@@ -41,7 +41,18 @@ public class Vehicle extends AuditableEntity {
     @Column(name = "acquired_at")
     private LocalDate acquiredAt;
 
+    @Column(length = 80)
+    private String region;
+
     protected Vehicle() {
+    }
+
+    public String getRegion() {
+        return region;
+    }
+
+    public void setRegion(String region) {
+        this.region = region;
     }
 
     public String getRegistrationNumber() {

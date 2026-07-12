@@ -1,10 +1,10 @@
 package com.transitops.vehicle;
 
+/** Vehicle categories supported by the fleet registry. */
 public enum VehicleType {
     TRUCK,
     VAN,
-    BUS,
     CAR,
-    PICKUP,
-    TRAILER
+    BUS,
+    BIKE
 }

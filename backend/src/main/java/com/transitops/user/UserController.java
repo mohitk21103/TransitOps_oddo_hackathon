@@ -20,7 +20,7 @@ import java.util.UUID;
  */
 @RestController
 @RequestMapping("/api/users")
-@PreAuthorize("hasRole('ADMIN')")
+@PreAuthorize("hasRole('FLEET_MANAGER')")
 public class UserController {
 
     private final UserService userService;

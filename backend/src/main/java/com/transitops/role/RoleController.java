@@ -28,7 +28,7 @@ public class RoleController {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('FLEET_MANAGER')")
     public ApiResponse<RoleResponse> create(@Valid @RequestBody CreateRoleRequest request) {
         return ApiResponse.ok(roleService.create(request), "Role created");
     }

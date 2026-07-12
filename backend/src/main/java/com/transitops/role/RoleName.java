@@ -7,11 +7,10 @@ package com.transitops.role;
  * The Spring Security authority is {@code ROLE_<name>}.
  */
 public enum RoleName {
-    ADMIN("Full access, user & role management"),
-    MANAGER("Fleet oversight, reports & analytics"),
-    DISPATCHER("Create and dispatch trips"),
-    DRIVER("Limited: own trips and logs"),
-    VIEWER("Read-only dashboards");
+    FLEET_MANAGER("Oversees fleet assets, maintenance, vehicle lifecycle and efficiency"),
+    DISPATCHER("Creates trips, assigns vehicles and drivers, monitors active deliveries"),
+    SAFETY_OFFICER("Ensures driver compliance, licence validity and safety scores"),
+    FINANCIAL_ANALYST("Reviews expenses, fuel, maintenance costs and profitability");
 
     public static final String AUTHORITY_PREFIX = "ROLE_";
 
