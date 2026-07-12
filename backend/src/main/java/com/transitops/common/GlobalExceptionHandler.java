@@ -30,6 +30,15 @@ public class GlobalExceptionHandler {
         return build(HttpStatus.UNAUTHORIZED, "Invalid email or password", req, null);
     }
 
+    @ExceptionHandler(BusinessRuleException.class)
+    public ResponseEntity<ApiError> handleBusinessRule(BusinessRuleException ex, HttpServletRequest req) {
+        Map<String, String> details = new HashMap<>();
+        for (int i = 0; i < ex.getErrors().size(); i++) {
+            details.put("rule" + (i + 1), ex.getErrors().get(i));
+        }
+        return build(HttpStatus.BAD_REQUEST, ex.getMessage(), req, details);
+    }
+
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ApiError> handleAccessDenied(AccessDeniedException ex, HttpServletRequest req) {
         return build(HttpStatus.FORBIDDEN, "You do not have permission to perform this action", req, null);

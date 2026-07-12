@@ -46,6 +46,10 @@ public class FuelLog extends AuditableEntity {
     @Column(name = "total_cost", insertable = false, updatable = false)
     private BigDecimal totalCost;
 
+    /** Total fuel cost as logged by the operator (frontend contract). */
+    @Column
+    private BigDecimal cost;
+
     @Column(name = "odometer_km")
     private BigDecimal odometerKm;
 
@@ -105,6 +109,14 @@ public class FuelLog extends AuditableEntity {
 
     public BigDecimal getTotalCost() {
         return totalCost;
+    }
+
+    public BigDecimal getCost() {
+        return cost;
+    }
+
+    public void setCost(BigDecimal cost) {
+        this.cost = cost;
     }
 
     public BigDecimal getOdometerKm() {
