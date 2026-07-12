@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm --version)",
+      "Bash(java -version)",
+      "Bash(mvn -version)",
+      "Bash(gradle -version)",
+      "Read(//tmp/**)",
+      "Bash(curl -sS --max-time 30 -o transitops.zip \"https://start.spring.io/starter.zip?type=maven-project&language=java&bootVersion=3.3.4&javaVersion=21&groupId=com.transitops&artifactId=backend&name=transitops&packageName=com.transitops&dependencies=web,validation,actuator&packaging=jar\")",
+      "Bash(unzip -l transitops.zip)",
+      "Bash(python3 -c \"import urllib.request; urllib.request.urlretrieve\\('https://start.spring.io/starter.zip?type=maven-project&language=java&bootVersion=3.3.4&javaVersion=21&groupId=com.transitops&artifactId=backend&name=transitops&packageName=com.transitops&dependencies=web,validation,actuator&packaging=jar','/tmp/transitops.zip'\\); print\\('DOWNLOAD OK'\\)\")",
+      "Bash(python3 -c \"import urllib.request; urllib.request.urlretrieve\\('https://start.spring.io/starter.zip?type=maven-project&language=java&javaVersion=21&groupId=com.transitops&artifactId=backend&name=transitops&packageName=com.transitops&dependencies=web,validation,actuator','/tmp/transitops.zip'\\); print\\('DOWNLOAD OK'\\)\")",
+      "Bash(unzip -l /tmp/transitops.zip)",
+      "Bash(unzip -oq /tmp/transitops.zip)",
+      "Bash(chmod +x mvnw)",
+      "Bash(rm -f domain/Identifiable.java repository/CrudRepository.java repository/inmemory/InMemoryRepository.java repository/inmemory/InMemoryVehicleRepository.java repository/inmemory/InMemoryRouteRepository.java repository/inmemory/InMemoryAlertRepository.java dto/response/VehicleResponse.java dto/response/RouteResponse.java dto/response/AlertResponse.java)",
+      "Bash(rmdir repository/inmemory)",
+      "Bash(rm -f domain/Vehicle.java domain/TransitRoute.java domain/Alert.java domain/GeoPoint.java domain/enums/*.java dto/response/DashboardStats.java repository/VehicleRepository.java repository/RouteRepository.java repository/AlertRepository.java && rmdir domain/enums domain repository 2>/dev/null; rm -f src/main/resources/application.properties 2>/dev/null; echo \"remaining:\" && find . -type f | sort)",
+      "Bash(npm install *)"
+    ],
+    "additionalDirectories": [
+      "/home/mbg/odoo/backend/src/main/java/com/transitops/domain/enums"
+    ]
+  }
+}
