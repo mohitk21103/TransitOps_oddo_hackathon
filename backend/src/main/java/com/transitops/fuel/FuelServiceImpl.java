@@ -15,17 +15,21 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
-import java.util.Set;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
 @Transactional
 public class FuelServiceImpl implements FuelService {
 
-    /** Whitelisted sortable properties; anything else falls back to the default. */
-    private static final Set<String> SORT_FIELDS = Set.of(
-            "fuelType", "liters", "costPerLiter", "totalCost", "cost",
-            "odometerKm", "loggedAt", "createdAt", "updatedAt");
+    /** Sortable response field -> JPA property; anything else falls back to the default. */
+    private static final Map<String, String> SORT_FIELDS = Map.ofEntries(
+            Map.entry("liters", "liters"),
+            Map.entry("cost", "cost"),
+            Map.entry("odometer", "odometerKm"),
+            Map.entry("date", "loggedAt"),
+            Map.entry("createdAt", "createdAt"),
+            Map.entry("updatedAt", "updatedAt"));
 
     private final FuelRepository repository;
     private final VehicleRepository vehicleRepository;

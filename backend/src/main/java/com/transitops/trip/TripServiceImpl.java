@@ -29,10 +29,21 @@ import java.util.UUID;
 @Transactional
 public class TripServiceImpl implements TripService {
 
-    /** Whitelisted sortable properties; anything else falls back to the default. */
-    private static final Set<String> SORT_FIELDS = Set.of(
-            "referenceCode", "source", "destination", "cargoWeightKg",
-            "plannedDistanceKm", "status", "revenue", "createdAt", "updatedAt");
+    /** Sortable response field -> JPA property; anything else falls back to the default. */
+    private static final Map<String, String> SORT_FIELDS = Map.ofEntries(
+            Map.entry("source", "source"),
+            Map.entry("destination", "destination"),
+            Map.entry("cargoWeight", "cargoWeightKg"),
+            Map.entry("plannedDistance", "plannedDistanceKm"),
+            Map.entry("status", "status"),
+            Map.entry("startOdometer", "startOdometerKm"),
+            Map.entry("endOdometer", "endOdometerKm"),
+            Map.entry("fuelConsumed", "fuelConsumedL"),
+            Map.entry("revenue", "revenue"),
+            Map.entry("dispatchedAt", "dispatchedAt"),
+            Map.entry("completedAt", "completedAt"),
+            Map.entry("createdAt", "createdAt"),
+            Map.entry("updatedAt", "updatedAt"));
 
     private final TripRepository tripRepository;
     private final VehicleRepository vehicleRepository;

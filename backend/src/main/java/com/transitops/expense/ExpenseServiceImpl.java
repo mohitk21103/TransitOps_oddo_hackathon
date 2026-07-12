@@ -13,16 +13,21 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.Set;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
 @Transactional
 public class ExpenseServiceImpl implements ExpenseService {
 
-    /** Whitelisted sortable properties; anything else falls back to the default. */
-    private static final Set<String> SORT_FIELDS = Set.of(
-            "category", "amount", "incurredAt", "approved", "createdAt", "updatedAt");
+    /** Sortable response field -> JPA property; anything else falls back to the default. */
+    private static final Map<String, String> SORT_FIELDS = Map.ofEntries(
+            Map.entry("category", "category"),
+            Map.entry("amount", "amount"),
+            Map.entry("note", "description"),
+            Map.entry("date", "incurredAt"),
+            Map.entry("createdAt", "createdAt"),
+            Map.entry("updatedAt", "updatedAt"));
 
     private final ExpenseRepository repository;
     private final VehicleRepository vehicleRepository;

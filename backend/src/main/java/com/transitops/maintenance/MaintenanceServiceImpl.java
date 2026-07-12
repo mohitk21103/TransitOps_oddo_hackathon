@@ -15,17 +15,23 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
-import java.util.Set;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
 @Transactional
 public class MaintenanceServiceImpl implements MaintenanceService {
 
-    /** Whitelisted sortable properties; anything else falls back to the default. */
-    private static final Set<String> SORT_FIELDS = Set.of(
-            "title", "type", "status", "cost", "scheduledFor",
-            "openedAt", "closedAt", "createdAt", "updatedAt");
+    /** Sortable response field -> JPA property; anything else falls back to the default. */
+    private static final Map<String, String> SORT_FIELDS = Map.ofEntries(
+            Map.entry("title", "title"),
+            Map.entry("description", "description"),
+            Map.entry("cost", "cost"),
+            Map.entry("status", "status"),
+            Map.entry("openedAt", "openedAt"),
+            Map.entry("closedAt", "closedAt"),
+            Map.entry("createdAt", "createdAt"),
+            Map.entry("updatedAt", "updatedAt"));
 
     private final MaintenanceRepository repository;
     private final VehicleRepository vehicleRepository;
