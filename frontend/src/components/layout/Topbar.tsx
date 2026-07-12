@@ -36,7 +36,7 @@ export function Topbar() {
               {user.name}
             </p>
             <p className="text-xs text-slate-500 dark:text-slate-400">
-              {ROLE_LABELS[user.role]}
+              {user.roles.map((role) => ROLE_LABELS[role]).join(', ')}
             </p>
           </div>
         )}

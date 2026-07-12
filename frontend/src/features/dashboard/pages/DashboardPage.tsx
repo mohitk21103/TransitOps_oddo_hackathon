@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import {
   CarFront,
   CircleParking,
@@ -11,7 +12,9 @@ import { PageHeader, Spinner } from '@/components/ui'
 import { percent } from '@/lib/utils'
 import { useDashboardKpis } from '../hooks/useDashboard'
 import { KpiCard } from '../components/KpiCard'
-import type { DashboardKpis } from '../types'
+import { VehicleStatusBars } from '../components/VehicleStatusBars'
+import { DashboardFilterBar } from '../components/DashboardFilterBar'
+import type { DashboardFilters, DashboardKpis } from '../types'
 
 const EMPTY_KPIS: DashboardKpis = {
   activeVehicles: 0,
@@ -21,11 +24,16 @@ const EMPTY_KPIS: DashboardKpis = {
   pendingTrips: 0,
   driversOnDuty: 0,
   fleetUtilization: 0,
+  vehicleStatus: { available: 0, onTrip: 0, inShop: 0, retired: 0 },
 }
 
 export function DashboardPage() {
-  const { data, isLoading } = useDashboardKpis()
+  const [filters, setFilters] = useState<DashboardFilters>({})
+  const { data, isLoading, isFetching } = useDashboardKpis(filters)
   const kpis = data ?? EMPTY_KPIS
+
+  const updateFilters = (patch: Partial<DashboardFilters>) =>
+    setFilters((prev) => ({ ...prev, ...patch }))
 
   return (
     <div className="flex flex-col gap-6">
@@ -34,12 +42,18 @@ export function DashboardPage() {
         description="Real-time overview of fleet operations."
       />
 
+      <DashboardFilterBar filters={filters} onChange={updateFilters} />
+
       {isLoading ? (
         <div className="flex justify-center py-16">
           <Spinner className="h-8 w-8" />
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div
+          className={`grid grid-cols-1 gap-4 transition-opacity sm:grid-cols-2 lg:grid-cols-4 ${
+            isFetching ? 'opacity-60' : ''
+          }`}
+        >
           <KpiCard
             label="Active Vehicles"
             value={kpis.activeVehicles}
@@ -76,6 +90,14 @@ export function DashboardPage() {
             icon={UserCheck}
             accent="text-emerald-600"
           />
+        </div>
+      )}
+
+      {!isLoading && (
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+          <div className="lg:col-span-1">
+            <VehicleStatusBars breakdown={kpis.vehicleStatus} />
+          </div>
         </div>
       )}
     </div>

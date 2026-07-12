@@ -1,10 +1,27 @@
 import { apiClient, ENDPOINTS } from '@/lib/api'
 import type { ApiResponse } from '@/types'
-import type { AuthSession, Credentials, User } from '../types'
+import type {
+  AuthResponse,
+  Credentials,
+  Role,
+  User,
+  UserProfileDto,
+} from '../types'
+
+/** Map the backend user profile DTO onto the frontend `User` model. */
+function toUser(dto: UserProfileDto): User {
+  return {
+    id: dto.id,
+    email: dto.email,
+    name: dto.fullName,
+    active: dto.active,
+    roles: dto.roles as Role[],
+  }
+}
 
 export const authApi = {
-  async login(credentials: Credentials): Promise<AuthSession> {
-    const { data } = await apiClient.post<ApiResponse<AuthSession>>(
+  async login(credentials: Credentials): Promise<AuthResponse> {
+    const { data } = await apiClient.post<ApiResponse<AuthResponse>>(
       ENDPOINTS.auth.login,
       credentials,
     )
@@ -12,11 +29,9 @@ export const authApi = {
   },
 
   async me(): Promise<User> {
-    const { data } = await apiClient.get<ApiResponse<User>>(ENDPOINTS.auth.me)
-    return data.data
-  },
-
-  async logout(): Promise<void> {
-    await apiClient.post(ENDPOINTS.auth.logout)
+    const { data } = await apiClient.get<ApiResponse<UserProfileDto>>(
+      ENDPOINTS.auth.me,
+    )
+    return toUser(data.data)
   },
 }
