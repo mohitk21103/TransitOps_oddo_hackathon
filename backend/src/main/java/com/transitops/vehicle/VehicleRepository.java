@@ -32,6 +32,4 @@ public interface VehicleRepository extends JpaRepository<Vehicle, UUID> {
     Optional<Vehicle> findByRegistrationNumberIgnoreCase(String registrationNumber);
 
     List<Vehicle> findByStatus(VehicleStatus status);
-
-    long countByStatus(VehicleStatus status);
 }
