@@ -1,4 +1,6 @@
-package com.transitops.expense;
+package com.transitops.expense.dto;
+import com.transitops.expense.Expense;
+import com.transitops.expense.ExpenseCategory;
 
 import java.math.BigDecimal;
 import java.time.Instant;

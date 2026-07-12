@@ -1,4 +1,5 @@
 package com.transitops.auth;
+import com.transitops.auth.dto.*;
 
 import com.transitops.common.ApiResponse;
 import com.transitops.common.ResourceNotFoundException;

@@ -1,4 +1,6 @@
-package com.transitops.maintenance;
+package com.transitops.maintenance.dto;
+import com.transitops.maintenance.MaintenanceLog;
+import com.transitops.maintenance.MaintenanceStatus;
 
 import java.math.BigDecimal;
 import java.time.Instant;

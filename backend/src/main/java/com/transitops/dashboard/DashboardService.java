@@ -1,4 +1,5 @@
 package com.transitops.dashboard;
+import com.transitops.dashboard.dto.*;
 
 import com.transitops.dashboard.DashboardStatsResponse.VehicleStatusBreakdown;
 import com.transitops.driver.DriverRepository;

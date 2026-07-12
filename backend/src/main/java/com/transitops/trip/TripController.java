@@ -1,4 +1,5 @@
 package com.transitops.trip;
+import com.transitops.trip.dto.*;
 
 import com.transitops.common.ApiResponse;
 import com.transitops.common.PageResponse;

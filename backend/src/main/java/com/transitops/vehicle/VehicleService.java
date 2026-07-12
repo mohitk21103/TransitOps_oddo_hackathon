@@ -1,4 +1,5 @@
 package com.transitops.vehicle;
+import com.transitops.vehicle.dto.*;
 
 import com.transitops.common.CrudService;
 

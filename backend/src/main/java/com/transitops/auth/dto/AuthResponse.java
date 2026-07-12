@@ -1,4 +1,4 @@
-package com.transitops.auth;
+package com.transitops.auth.dto;
 
 /**
  * Login response the SPA consumes: a bearer token + the user profile.

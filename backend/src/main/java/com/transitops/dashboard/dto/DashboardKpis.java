@@ -1,4 +1,4 @@
-package com.transitops.dashboard;
+package com.transitops.dashboard.dto;
 
 /** KPI figures for the operations dashboard (matches the frontend contract). */
 public record DashboardKpis(
