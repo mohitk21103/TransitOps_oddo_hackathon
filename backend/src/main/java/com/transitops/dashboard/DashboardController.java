@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Read-only dashboard analytics. Requires authentication (any role).
- * Optional filters: {@code vehicleType} and {@code status} scope the
- * vehicle-based KPIs; both may be omitted for a fleet-wide view.
+ * Optional filters: {@code vehicleType}, {@code status} and {@code region}
+ * scope the vehicle-based KPIs; any may be omitted for a fleet-wide view.
  */
 @RestController
 @RequestMapping("/api/dashboard")
@@ -26,7 +26,8 @@ public class DashboardController {
     @GetMapping("/kpis")
     public ApiResponse<DashboardStatsResponse> kpis(
             @RequestParam(required = false) VehicleType vehicleType,
-            @RequestParam(required = false) VehicleStatus status) {
-        return ApiResponse.ok(dashboardService.getStats(vehicleType, status));
+            @RequestParam(required = false) VehicleStatus status,
+            @RequestParam(required = false) String region) {
+        return ApiResponse.ok(dashboardService.getStats(vehicleType, status, region));
     }
 }

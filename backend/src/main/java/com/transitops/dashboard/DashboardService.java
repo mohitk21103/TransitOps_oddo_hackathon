@@ -10,7 +10,8 @@ public interface DashboardService {
 
     /**
      * Aggregated KPIs plus the recent-trips list, optionally scoped by the
-     * Vehicle Type / Status filters (pass {@code null} for a fleet-wide view).
+     * Vehicle Type / Status / Region filters (pass {@code null} for a
+     * fleet-wide view).
      */
-    DashboardStatsResponse getStats(VehicleType type, VehicleStatus status);
+    DashboardStatsResponse getStats(VehicleType type, VehicleStatus status, String region);
 }
