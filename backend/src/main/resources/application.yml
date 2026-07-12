@@ -12,11 +12,26 @@ spring:
     name: transitops
   profiles:
     default: dev
+  # ---- Connection pool (HikariCP) — shared defaults, all env-overridable ----
+  datasource:
+    hikari:
+      pool-name: TransitOpsPool
+      maximum-pool-size: ${DB_POOL_MAX:10}      # hard ceiling on concurrent DB connections
+      minimum-idle: ${DB_POOL_MIN:2}            # warm connections kept ready
+      connection-timeout: ${DB_CONNECTION_TIMEOUT_MS:30000}   # wait max 30s for a connection
+      idle-timeout: ${DB_IDLE_TIMEOUT_MS:600000}              # retire idle conns after 10m
+      max-lifetime: ${DB_MAX_LIFETIME_MS:1800000}             # recycle conns before 30m (< DB timeout)
+      keepalive-time: ${DB_KEEPALIVE_MS:300000}               # ping idle conns every 5m
+      leak-detection-threshold: ${DB_LEAK_DETECTION_MS:30000} # warn if a conn is held > 30s
   jpa:
-    open-in-view: false
+    open-in-view: false           # no lazy loading outside the service layer
+    show-sql: false               # never print SQL to the console
     properties:
       hibernate:
-        format_sql: true
+        jdbc:
+          batch_size: 30          # batch inserts/updates for throughput
+        order_inserts: true
+        order_updates: true
 
 server:
   port: ${SERVER_PORT:9095}
